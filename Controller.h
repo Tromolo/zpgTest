@@ -14,7 +14,6 @@ public:
     void handleSceneSwitching();       
     static void mouse_callback(GLFWwindow* window, double xpos, double ypos); 
     int getCurrentSceneIndex() const;
-    void processMouseInput();
 private:
     Camera& camera;              
     std::vector<Scene*>& scenes; 

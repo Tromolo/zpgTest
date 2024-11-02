@@ -27,7 +27,7 @@ public:
 
     float MovementSpeed;
     float MouseSensitivity;
-    Camera() : Camera(glm::vec3(0.0f, 1.5f, 5.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f) {}
+    //Camera() : Camera(glm::vec3(0.0f, 1.5f, 5.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f) {}
     Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch);
 
     glm::mat4 GetViewMatrix();
@@ -39,8 +39,10 @@ public:
 
     void setPosition(const glm::vec3& position);
     void setTarget(const glm::vec3& target);
-private:
+    void setPitch(float pitch);
     void updateCameraVectors();
+private:
+    
     std::vector<ICameraObserver*> observers; 
     void notifyObservers();
 };

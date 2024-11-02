@@ -17,8 +17,9 @@ public:
     void run();  
 
 private:
+    void initializeScene(int sceneId);
     void loadShaderProgram(const std::string& vertexFile, const std::string& fragmentFile);
-    void createScene(void (Scene::* initFunc)());
+    void createScene(int sceneId ,const std::function<void(Scene&)>& initFunc);
     GLFWwindow* window;
     Camera camera;
     std::vector<Scene*> scenes;

@@ -135,20 +135,20 @@
     <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DrawableObject.cpp" />
-    <ClCompile Include="gift.cpp" />
-    <ClCompile Include="ICameraObserver.cpp" />
     <ClCompile Include="Light.cpp" />
-    <ClCompile Include="LightObserver.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="Rotation.cpp" />
     <ClCompile Include="Scale.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Scene1Initializer.cpp" />
+    <ClCompile Include="Scene2Initializer.cpp" />
+    <ClCompile Include="Scene3Initializer.cpp" />
+    <ClCompile Include="Scene4Initializer.cpp" />
+    <ClCompile Include="SceneInitializer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="Transformation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -166,6 +166,11 @@
     <ClInclude Include="Rotation.h" />
     <ClInclude Include="Scale.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Scene1Initializer.h" />
+    <ClInclude Include="Scene2Initializer.h" />
+    <ClInclude Include="Scene3Initializer.h" />
+    <ClInclude Include="Scene4Initializer.h" />
+    <ClInclude Include="SceneInitializer.h" />
     <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Sphere.h" />
@@ -173,6 +178,7 @@
     <ClInclude Include="tree.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitignore" />
     <None Include="colorShader1.frag" />
     <None Include="colorShader2.frag" />
     <None Include="default.frag" />

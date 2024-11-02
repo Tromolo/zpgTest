@@ -56,13 +56,18 @@ void Camera::updateCameraVectors()
     front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
     Front = glm::normalize(front);
 
-    Right = glm::normalize(glm::cross(Front, WorldUp)); 
+    Right = glm::normalize(glm::cross(Front, WorldUp));
     Up = glm::normalize(glm::cross(Right, Front));
 }
 
 void Camera::addObserver(ICameraObserver* observer)
 {
     observers.push_back(observer);
+}
+
+void Camera::setPitch(float pitch)
+{
+    Pitch = pitch;
 }
 
 void Camera::removeObserver(ICameraObserver* observer) {
