@@ -54,8 +54,8 @@ void Application::initializeScene(int sceneId) {
     if (!CameraManager::getInstance().isCameraInitialized(sceneId)) {
         switch (sceneId) {
         case 1:
-            camera.setPosition(glm::vec3(0.0f, 10.0f, 0.0f));
-            camera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
+            camera.setPosition(glm::vec3(0.0f, 0.0f, 2.0f));  
+            camera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));    
             break;
         case 2:
             camera.setPosition(glm::vec3(5.0f, 3.0f, 0.0f));
@@ -108,14 +108,17 @@ void Application::initScene() {
     loadShaderProgram("vertexLambert.vert", "fragmentLambert.frag");
     loadShaderProgram("vertexConstant.vert", "fragmentConstant.frag");
     loadShaderProgram("vertexBlinnPhong.vert", "fragmentBlinnPhong.frag");
+    loadShaderProgram("grass.vert", "grass.frag");
+
 
     createScene(1, [this](Scene& scene) {
         Scene1Initializer scene1Initializer(shaderPrograms[1]);
         scene.initialize(scene1Initializer);
         });
 
-    createScene(2, [this](Scene& scene) {
-        Scene2Initializer scene2Initializer(shaderPrograms[3]);
+    std::vector<ShaderProgram*> Scene2Shaders = { shaderPrograms[3], shaderPrograms[8] };
+    createScene(2, [this, Scene2Shaders](Scene& scene) {
+        Scene2Initializer scene2Initializer(Scene2Shaders);
         scene.initialize(scene2Initializer);
         });
 

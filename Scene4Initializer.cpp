@@ -16,6 +16,12 @@ void Scene4Initializer::initialize(Scene& scene) {
 
     Camera& camera = CameraManager::getInstance().getCameraForScene(4);
 
+    Light* pointLight = new Light(glm::vec3(0.0f, 10.0f, 10.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5.0f);
+    for (ShaderProgram* shader : giftShaders) {
+        pointLight->addObserver(shader);
+    }
+    scene.addLightSource(pointLight);
+
     int giftVertexCount = sizeof(gift) / sizeof(gift[0]) / 6;
     Model* giftModel = new Model(gift, nullptr, giftVertexCount, true);
 

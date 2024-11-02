@@ -18,6 +18,8 @@ void Scene::render(Camera& camera) {
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
     glm::vec3 cameraPosition = camera.Position;
 
+    std::cout << "Number of lights in scene: " << lightSources.size() << std::endl;
+
     for (auto& shaderProgram : shaderPrograms) {
         shaderProgram->update(viewMatrix, cameraPosition);
         if (!lightSources.empty()) {

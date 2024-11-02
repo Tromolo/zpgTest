@@ -7,12 +7,12 @@
 
 class Scene2Initializer : public SceneInitializer {
 public:
-    Scene2Initializer(ShaderProgram* treeBushShader);
+    Scene2Initializer(const std::vector<ShaderProgram*>& scene2Shaders);
 
     void initialize(Scene& scene) override;
 
 private:
-    ShaderProgram* treeBushShader; 
+    std::vector<ShaderProgram*> scene2Shaders;
 };
 
 #endif
