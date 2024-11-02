@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Prerequisites
 *.d
 
@@ -31,7 +30,8 @@
 *.exe
 *.out
 *.app
-=======
+
+# Visual Studio files
 .vs/
 Debug/
 x64/
@@ -39,4 +39,7 @@ x64/
 *.user
 *.opendb
 *.VC.opendb
->>>>>>> f19f0b6 (zpg saved test)
+
+# Visual Studio project files
+*.vcxproj
+*.vcxproj.filters
