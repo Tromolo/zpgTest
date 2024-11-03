@@ -3,7 +3,9 @@
 #include "Model.h"               
 #include "DrawableObject.h"    
 #include <cmath>                
+#include "CompositeTransformation.h"
 #include "CameraManager.h"
+#include "Position.h"
 
 Scene3Initializer::Scene3Initializer(ShaderProgram* sphereShader)
     : sphereShader(sphereShader) {}
@@ -14,10 +16,10 @@ void Scene3Initializer::initialize(Scene& scene) {
     Camera& camera = CameraManager::getInstance().getCameraForScene(3);
 
     Light* pointLight = new Light(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5.0f);
-    pointLight->addObserver(sphereShader);
+    pointLight->addObserver(sphereShader);  
     scene.addLightSource(pointLight);
 
-    int sphereVertexCount = sizeof(sphere) / sizeof(sphere[0]) / 6;  
+    int sphereVertexCount = sizeof(sphere) / sizeof(sphere[0]) / 6;
     Model* sphereModel = new Model(sphere, nullptr, sphereVertexCount, true);
 
     float radius = 2.5f;
@@ -28,9 +30,15 @@ void Scene3Initializer::initialize(Scene& scene) {
         float angle = i * angleStep;
         glm::vec3 position(radius * cos(angle), 0.0f, radius * sin(angle));
 
+        auto compositeTransformation = std::make_shared<CompositeTransformation>();
+
+        auto positionTransformation = std::make_shared<Position>();
+        positionTransformation->setPosition(position);
+        compositeTransformation->addTransformation(positionTransformation);
+
         DrawableObject* sphereObject = new DrawableObject(sphereModel, sphereShader);
-        sphereObject->getPosition()->setPosition(position);
+        sphereObject->setTransformation(compositeTransformation);
+
         scene.addObject(sphereObject);
     }
-          
 }

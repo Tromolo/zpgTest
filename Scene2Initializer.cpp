@@ -5,6 +5,10 @@
 #include <random>   
 #include <glm/gtc/matrix_transform.hpp> 
 #include "CameraManager.h"
+#include "CompositeTransformation.h"  
+#include "Position.h"               
+#include "Rotation.h"             
+#include "Scale.h"     
 
 static float grassPlaneVertices[] = {
     -20.0f, 0.0f, -20.0f,
@@ -47,28 +51,64 @@ void Scene2Initializer::initialize(Scene& scene) {
 
     for (int i = 0; i < 50; ++i) {
         DrawableObject* treeObject = new DrawableObject(treeModel, scene2Shaders[0]);
-        treeObject->getPosition()->setPosition(glm::vec3(posDistX(gen), 0.0f, posDistZ(gen)));
-        treeObject->getRotation()->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), rotDist(gen));
-        treeObject->getScale()->setScale(glm::vec3(scaleDist(gen)));
 
+        auto compositeTransformation = std::make_shared<CompositeTransformation>();
+
+        auto position = std::make_shared<Position>();
+        position->setPosition(glm::vec3(posDistX(gen), 0.0f, posDistZ(gen)));
+        compositeTransformation->addTransformation(position);
+
+        auto rotation = std::make_shared<Rotation>();
+        rotation->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), rotDist(gen));
+        compositeTransformation->addTransformation(rotation);
+
+        auto scale = std::make_shared<Scale>();
+        scale->setScale(glm::vec3(scaleDist(gen)));
+        compositeTransformation->addTransformation(scale);
+
+        treeObject->setTransformation(compositeTransformation);
         scene.addObject(treeObject);
     }
 
     for (int i = 0; i < 50; ++i) {
         DrawableObject* bushObject = new DrawableObject(bushModel, scene2Shaders[0]);
-        bushObject->getPosition()->setPosition(glm::vec3(posDistX(gen), 0.0f, posDistZ(gen)));
-        bushObject->getRotation()->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), rotDist(gen));
-        bushObject->getScale()->setScale(glm::vec3(scaleDist(gen)));
 
+        auto compositeTransformation = std::make_shared<CompositeTransformation>();
+
+        auto position = std::make_shared<Position>();
+        position->setPosition(glm::vec3(posDistX(gen), 0.0f, posDistZ(gen)));
+        compositeTransformation->addTransformation(position);
+
+        auto rotation = std::make_shared<Rotation>();
+        rotation->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), rotDist(gen));
+        compositeTransformation->addTransformation(rotation);
+
+        auto scale = std::make_shared<Scale>();
+        scale->setScale(glm::vec3(scaleDist(gen)));
+        compositeTransformation->addTransformation(scale);
+
+        bushObject->setTransformation(compositeTransformation);
         scene.addObject(bushObject);
     }
 
     for (int i = 0; i < 20; ++i) {
         DrawableObject* giftObject = new DrawableObject(giftModel, scene2Shaders[0]);
-        giftObject->getPosition()->setPosition(glm::vec3(posDistX(gen), 0.0f, posDistZ(gen)));
-        giftObject->getRotation()->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), rotDist(gen));
-        giftObject->getScale()->setScale(glm::vec3(scaleDist(gen)));
 
+        auto compositeTransformation = std::make_shared<CompositeTransformation>();
+
+        auto position = std::make_shared<Position>();
+        position->setPosition(glm::vec3(posDistX(gen), 0.0f, posDistZ(gen)));
+        compositeTransformation->addTransformation(position);
+
+        auto rotation = std::make_shared<Rotation>();
+        rotation->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), rotDist(gen));
+        compositeTransformation->addTransformation(rotation);
+
+        auto scale = std::make_shared<Scale>();
+        scale->setScale(glm::vec3(scaleDist(gen)));
+        compositeTransformation->addTransformation(scale);
+
+        giftObject->setTransformation(compositeTransformation);
         scene.addObject(giftObject);
     }
 }

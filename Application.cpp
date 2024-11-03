@@ -127,9 +127,9 @@ void Application::initScene() {
         scene.initialize(scene3Initializer);
         });
 
-    std::vector<ShaderProgram*> giftShaders = { shaderPrograms[4], shaderPrograms[5], shaderPrograms[6], shaderPrograms[7] };
-    createScene(4, [this, giftShaders](Scene& scene) {
-        Scene4Initializer scene4Initializer(giftShaders);
+    std::vector<ShaderProgram*> sphereShaders = { shaderPrograms[4], shaderPrograms[5], shaderPrograms[6], shaderPrograms[7] };
+    createScene(4, [this, sphereShaders](Scene& scene) {
+        Scene4Initializer scene4Initializer(sphereShaders);
         scene.initialize(scene4Initializer);
         });
     std::cout << "Total scenes loaded: " << scenes.size() << std::endl;

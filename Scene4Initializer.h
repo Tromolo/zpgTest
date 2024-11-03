@@ -7,12 +7,12 @@
 
 class Scene4Initializer : public SceneInitializer {
 public:
-    Scene4Initializer(const std::vector<ShaderProgram*>& giftShaders);
+    Scene4Initializer(const std::vector<ShaderProgram*>& sphereShaders);
 
     void initialize(Scene& scene) override;
 
 private:
-    std::vector<ShaderProgram*> giftShaders;  
+    std::vector<ShaderProgram*> sphereShaders;
 };
 
 #endif
