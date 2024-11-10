@@ -46,15 +46,16 @@ void Scene2Initializer::initialize(Scene& scene) {
     glm::vec3 light1Pos = glm::vec3(0.0f, 2.0f, 0.0f); 
     glm::vec3 light2Pos = glm::vec3(10.0f, 0.0f, -10.0f); 
 
-    light1 = std::make_shared<Light>(light1Pos, glm::vec3(1.0f, 0.5f, 0.0f), 1.0f); // Orange light
-    light2 = std::make_shared<Light>(light2Pos, glm::vec3(0.0f, 0.5f, 1.0f), 1.0f); // Blue light
+    light1 = std::make_shared<Light>(light1Pos, glm::vec3(1.0f, 0.5f, 0.0f), 1.0f); // Orange 
+    light2 = std::make_shared<Light>(light2Pos, glm::vec3(0.0f, 0.5f, 1.0f), 1.0f); // Blue 
+
+    for (const auto& shaderProgram : scene2Shaders) {
+        light1->addObserver(shaderProgram.get());
+        light2->addObserver(shaderProgram.get());
+    }
 
     scene.addLightSource(light1);
     scene.addLightSource(light2);
-
-    auto mainShader = scene2Shaders[0];
-    mainShader->updateLight(*light1);
-    mainShader->updateLight(*light2);
 
     int treeVertexCount = sizeof(tree) / sizeof(tree[0]) / 6;
     auto treeModel = std::make_shared<Model>(tree, nullptr, treeVertexCount, true);
@@ -153,10 +154,6 @@ void Scene2Initializer::update(float deltaTime) {
 
     moveLight(light1);
     moveLight(light2);
-
-    auto mainShader = scene2Shaders[0];
-    mainShader->updateLight(*light1);
-    mainShader->updateLight(*light2);
 }
 
 void Scene2Initializer::moveLight(const std::shared_ptr<Light>& light) {

@@ -3,7 +3,7 @@
 
 #include "SceneInitializer.h"
 #include "ShaderProgram.h"
-#include <memory>  // For std::shared_ptr
+#include <memory>
 
 class Scene1Initializer : public SceneInitializer {
 public:

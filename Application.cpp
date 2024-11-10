@@ -15,7 +15,6 @@ Application::Application(int width, int height, const char* title)
         return;
     }
 
-    // Enable window resizing
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     window = glfwCreateWindow(width, height, title, nullptr, nullptr);
@@ -206,7 +205,6 @@ void Application::cleanup() {
 
     glfwTerminate();
 }
-
 
 Application::~Application() {
     cleanup();
