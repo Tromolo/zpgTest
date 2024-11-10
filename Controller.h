@@ -8,7 +8,7 @@
 
 class Controller {
 public:
-    Controller(Camera& camera, std::vector<Scene*>& scenes, GLFWwindow* window);
+    Controller(Camera& camera, std::vector<std::shared_ptr<Scene>>& scenes, GLFWwindow* window);
     ~Controller();
     void processInput(float deltaTime); 
     void handleSceneSwitching();       
@@ -16,7 +16,7 @@ public:
     int getCurrentSceneIndex() const;
 private:
     Camera& camera;              
-    std::vector<Scene*>& scenes; 
+    std::vector<std::shared_ptr<Scene>>& scenes;
     GLFWwindow* window;     
 
     int currentSceneIndex = 0;   

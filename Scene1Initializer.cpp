@@ -1,8 +1,11 @@
-#include "Scene1Initializer.h"  
-#include "Scene.h"        
+#include "Scene1Initializer.h"
+#include "Scene.h"
 #include "Model.h"
+#include "DrawableObject.h"
+#include "CompositeTransformation.h"
+#include "Position.h"
 
-Scene1Initializer::Scene1Initializer(ShaderProgram* shaderProgram)
+Scene1Initializer::Scene1Initializer(const std::shared_ptr<ShaderProgram>& shaderProgram)
     : shaderProgram(shaderProgram) {}
 
 void Scene1Initializer::initialize(Scene& scene) {
@@ -14,9 +17,16 @@ void Scene1Initializer::initialize(Scene& scene) {
         0.25f, -0.3333f, 0.0f
     };
 
-    Model* triangleModel = new Model(triangleVertices, nullptr, 3, false);
+    auto triangleModel = std::make_shared<Model>(triangleVertices, nullptr, 3, false);
+    auto triangle = std::make_shared<DrawableObject>(triangleModel, shaderProgram);
 
-    DrawableObject* triangle = new DrawableObject(triangleModel, shaderProgram);
+    auto compositeTransformation = std::make_shared<CompositeTransformation>();
+
+    auto position = std::make_shared<Position>();
+    position->setPosition(glm::vec3(0.0f, 0.0f, 0.0f)); 
+    compositeTransformation->addTransformation(position);
+
+    triangle->setTransformation(compositeTransformation);
 
     scene.addObject(triangle);
 }

@@ -5,15 +5,16 @@
 #include "ShaderProgram.h"    
 #include "Light.h"             
 #include <glm/glm.hpp>
+#include <memory>
 
 class Scene3Initializer : public SceneInitializer {
 public:
-    Scene3Initializer(ShaderProgram* sphereShader);
+    explicit Scene3Initializer(std::shared_ptr<ShaderProgram> sphereShader);
 
     void initialize(Scene& scene) override;
 
 private:
-    ShaderProgram* sphereShader;
+    std::shared_ptr<ShaderProgram> sphereShader;
 };
 
 #endif

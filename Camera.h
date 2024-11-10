@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 #include "ICameraObserver.h"
 #include <vector>
+#include <memory>
 
 enum class CameraMovement {
     FORWARD,
@@ -33,8 +34,8 @@ public:
 
     void ProcessKeyboard(CameraMovement direction, float deltaTime);
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
-    void addObserver(ICameraObserver* observer);
-    void removeObserver(ICameraObserver* observer);
+    void addObserver(const std::shared_ptr<ICameraObserver>& observer);
+    void removeObserver(const std::shared_ptr<ICameraObserver>& observer);
 
     void setPosition(const glm::vec3& position);
     void setTarget(const glm::vec3& target);
@@ -42,7 +43,8 @@ public:
     void updateCameraVectors();
 private:
     
-    std::vector<ICameraObserver*> observers; 
+    std::vector<std::shared_ptr<ICameraObserver>> observers;
+
     void notifyObservers();
 };
 

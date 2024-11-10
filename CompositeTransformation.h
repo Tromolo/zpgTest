@@ -9,7 +9,7 @@
 class CompositeTransformation : public Transformation {
 public:
     void addTransformation(std::shared_ptr<Transformation> transformation);
-    void clear();
+
     glm::mat4 getMatrix() const override;
 
 private:

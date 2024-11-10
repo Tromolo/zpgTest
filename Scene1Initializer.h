@@ -1,18 +1,17 @@
 #ifndef SCENE1INITIALIZER_H
 #define SCENE1INITIALIZER_H
 
-#include "SceneInitializer.h"   
-#include "ShaderProgram.h"     
-#include "DrawableObject.h"
+#include "SceneInitializer.h"
+#include "ShaderProgram.h"
+#include <memory>  // For std::shared_ptr
 
 class Scene1Initializer : public SceneInitializer {
 public:
-    Scene1Initializer(ShaderProgram* shaderProgram);
-
+    explicit Scene1Initializer(const std::shared_ptr<ShaderProgram>& shaderProgram);
     void initialize(Scene& scene) override;
 
 private:
-    ShaderProgram* shaderProgram;
+    std::shared_ptr<ShaderProgram> shaderProgram;
 };
 
 #endif

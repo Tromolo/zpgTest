@@ -4,15 +4,16 @@
 #include "SceneInitializer.h"
 #include "ShaderProgram.h"    
 #include <vector>
+#include <memory>
 
 class Scene4Initializer : public SceneInitializer {
 public:
-    Scene4Initializer(const std::vector<ShaderProgram*>& sphereShaders);
+    Scene4Initializer(const std::vector<std::shared_ptr<ShaderProgram>>& sphereShaders);
 
     void initialize(Scene& scene) override;
 
 private:
-    std::vector<ShaderProgram*> sphereShaders;
+    std::vector<std::shared_ptr<ShaderProgram>> sphereShaders;
 };
 
 #endif

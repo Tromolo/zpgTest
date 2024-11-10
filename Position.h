@@ -7,6 +7,7 @@ class Position : public Transformation {
 public:
     Position();
     void setPosition(const glm::vec3& pos);
+    glm::vec3 getPosition() const;
     glm::mat4 getMatrix() const override;
 
 private:

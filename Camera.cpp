@@ -60,8 +60,7 @@ void Camera::updateCameraVectors()
     Up = glm::normalize(glm::cross(Right, Front));
 }
 
-void Camera::addObserver(ICameraObserver* observer)
-{
+void Camera::addObserver(const std::shared_ptr<ICameraObserver>& observer) {
     observers.push_back(observer);
 }
 
@@ -70,9 +69,13 @@ void Camera::setPitch(float pitch)
     Pitch = pitch;
 }
 
-void Camera::removeObserver(ICameraObserver* observer) {
-    observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
+void Camera::removeObserver(const std::shared_ptr<ICameraObserver>& observer) {
+    auto it = std::find(observers.begin(), observers.end(), observer);
+    if (it != observers.end()) {
+        observers.erase(it);
+    }
 }
+
 
 void Camera::setPosition(const glm::vec3& position) {
     Position = position;
@@ -87,7 +90,7 @@ void Camera::setTarget(const glm::vec3& target) {
 
 void Camera::notifyObservers() {
     glm::mat4 viewMatrix = GetViewMatrix();
-    for (auto observer : observers) {
-        observer->update(viewMatrix, Position); 
+    for (const auto& observer : observers) {
+        observer->update(viewMatrix, Position);
     }
 }

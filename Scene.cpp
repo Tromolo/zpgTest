@@ -1,15 +1,22 @@
 #include "Scene.h"
 #include "SceneInitializer.h"
+#include <GLFW/glfw3.h>
+#include "Rotation.h"
 
-Scene::Scene(const std::vector<ShaderProgram*>& shaderPrograms, Camera& cam, int width, int height)
-    : shaderPrograms(shaderPrograms), camera(cam), width(width), height(height) {}
+Scene::Scene(const std::vector<std::shared_ptr<ShaderProgram>>& shaderPrograms, Camera& camera, int width, int height)
+    : shaderPrograms(shaderPrograms), camera(camera), width(width), height(height) {}
 
 Scene::~Scene() {
     clearObjects();
 }
 
-void Scene::initialize(SceneInitializer& initializer) {
-    initializer.initialize(*this);
+void Scene::initialize(std::shared_ptr<SceneInitializer> initializer) {
+    this->initializer = std::move(initializer); 
+    this->initializer->initialize(*this);      
+}
+
+std::shared_ptr<SceneInitializer> Scene::getInitializer() const {
+    return initializer; 
 }
 
 void Scene::render(Camera& camera) {
@@ -18,45 +25,50 @@ void Scene::render(Camera& camera) {
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
     glm::vec3 cameraPosition = camera.Position;
 
-    std::cout << "Number of lights in scene: " << lightSources.size() << std::endl;
+    std::cout << "number of lights: " << lightSources.size() << std::endl;
 
-    for (auto& shaderProgram : shaderPrograms) {
+    for (const auto& shaderProgram : shaderPrograms) {
         shaderProgram->update(viewMatrix, cameraPosition);
+
         if (!lightSources.empty()) {
-            shaderProgram->updateLight(*lightSources[0]);
+            std::vector<Light*> rawLightPointers;
+            for (const auto& light : lightSources) {
+                rawLightPointers.push_back(light.get());
+            }
+            shaderProgram->updateLights(rawLightPointers); 
         }
     }
 
-    for (auto& object : objects) {
-        if (!lightSources.empty()) {
-            object->setupUniforms(viewMatrix, projection, cameraPosition, *lightSources[0]);
+    for (const auto& object : objects) {
+        if (lightSources.size() == 1) {
+            object->setupUniformsL(viewMatrix, projection, cameraPosition, *lightSources[0]);
         }
         else {
-            object->setupUniforms(viewMatrix, projection);
+            object->setupUniforms(viewMatrix, projection, cameraPosition, lightSources);
         }
+        
+
         object->draw();
     }
 }
 
 void Scene::clearObjects() {
-    for (auto& obj : objects) {
-        delete obj;
-    }
-    objects.clear();
+    objects.clear(); 
+    lightSources.clear();
 }
 
-void Scene::addObject(DrawableObject* object) {
-    objects.push_back(object);
+void Scene::addObject(std::shared_ptr<DrawableObject> object) {
+    objects.push_back(object); 
 }
 
-void Scene::addLightSource(Light* light) {
+void Scene::addLightSource(std::shared_ptr<Light> light) {
     lightSources.push_back(light);
-}
-
-const std::vector<Light*>& Scene::getLightSources() const {
-    return lightSources;
 }
 
 Camera& Scene::getCamera() {
     return camera;
+}
+
+const std::vector<std::shared_ptr<Light>>& Scene::getLightSources() const {
+    return lightSources;
 }

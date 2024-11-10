@@ -19,11 +19,11 @@ public:
 private:
     void initializeScene(int sceneId);
     void loadShaderProgram(const std::string& vertexFile, const std::string& fragmentFile);
-    void createScene(int sceneId ,const std::function<void(Scene&)>& initFunc);
+    void createScene(int sceneId, const std::function<void(Scene&, std::shared_ptr<SceneInitializer>&)>& initFunc);
     GLFWwindow* window;
     Camera camera;
-    std::vector<Scene*> scenes;
-    std::vector<ShaderProgram*> shaderPrograms;
+    std::vector<std::shared_ptr<Scene>> scenes;
+    std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms;
     std::vector<Light*> lightSources;
     Controller* controller;
 

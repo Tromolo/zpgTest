@@ -45,6 +45,21 @@ void ShaderProgram::setVec3(const std::string& name, const glm::vec3& value) con
     glUniform3fv(glGetUniformLocation(id, name.c_str()), 1, glm::value_ptr(value));
 }
 
+void ShaderProgram::updateLights(const std::vector<Light*>& lights) {
+    use();
+    for (size_t i = 0; i < lights.size(); ++i) {
+        if (lights[i]) {
+            std::string base = "lights[" + std::to_string(i) + "]";
+            glUniform3fv(glGetUniformLocation(id, (base + ".position").c_str()), 1, glm::value_ptr(lights[i]->getPosition()));
+            glUniform3fv(glGetUniformLocation(id, (base + ".color").c_str()), 1, glm::value_ptr(lights[i]->getColor()));
+            glUniform1f(glGetUniformLocation(id, (base + ".intensity").c_str()), lights[i]->getIntensity());
+        }
+    }
+
+    glUniform1i(glGetUniformLocation(id, "numLights"), static_cast<int>(lights.size()));
+}
+
+
 ShaderProgram::~ShaderProgram() {
     deleteShader();
 }

@@ -2,7 +2,7 @@
 #include <iostream>
 #include "CameraManager.h"
 
-Controller::Controller(Camera& camera, std::vector<Scene*>& scenes, GLFWwindow* window)
+Controller::Controller(Camera& camera, std::vector<std::shared_ptr<Scene>>& scenes, GLFWwindow* window)
     : camera(camera), scenes(scenes), window(window), cursorVisible(true) {}
 
 

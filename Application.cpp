@@ -86,21 +86,28 @@ void Application::initializeScene(int sceneId) {
 
 
 void Application::loadShaderProgram(const std::string& vertexFile, const std::string& fragmentFile) {
-    ShaderProgram* shaderProgram = new ShaderProgram(vertexFile.c_str(), fragmentFile.c_str());
-    camera.addObserver(shaderProgram);
-    shaderPrograms.push_back(shaderProgram);
+    auto shaderProgram = std::make_shared<ShaderProgram>(vertexFile.c_str(), fragmentFile.c_str());
+    camera.addObserver(shaderProgram);  
+    shaderPrograms.push_back(shaderProgram); 
 }
 
-void Application::createScene(int sceneId, const std::function<void(Scene&)>& initFunc) {
-    Camera& sceneCamera = CameraManager::getInstance().getCameraForScene(sceneId);
 
-    Scene* scene = new Scene(shaderPrograms, sceneCamera, 800, 600);
-    initFunc(*scene);
+void Application::createScene(int sceneId, const std::function<void(Scene&, std::shared_ptr<SceneInitializer>&)>& initFunc) {
+    Camera& sceneCamera = CameraManager::getInstance().getCameraForScene(sceneId);
+    auto scene = std::make_shared<Scene>(shaderPrograms, sceneCamera, 800, 600);
+    std::shared_ptr<SceneInitializer> initializer;
+    initFunc(*scene, initializer);
+
+    if (!initializer) {
+        std::cerr << "Error: SceneInitializer not created for Scene ID: " << sceneId << std::endl;
+        return;
+    }
+
+    scene->initialize(initializer);
     scenes.push_back(scene);
 }
 
 void Application::initScene() {
-    loadShaderProgram("default.vert", "default.frag");
     loadShaderProgram("default.vert", "colorShader2.frag");
     loadShaderProgram("default.vert", "colorShader1.frag");
     loadShaderProgram("tree.vert", "tree.frag");
@@ -110,30 +117,33 @@ void Application::initScene() {
     loadShaderProgram("vertexBlinnPhong.vert", "fragmentBlinnPhong.frag");
     loadShaderProgram("grass.vert", "grass.frag");
 
-
-    createScene(1, [this](Scene& scene) {
-        Scene1Initializer scene1Initializer(shaderPrograms[1]);
-        scene.initialize(scene1Initializer);
+    createScene(1, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
+        initializer = std::make_shared<Scene1Initializer>(shaderPrograms[0]); 
+        scene.initialize(initializer);
         });
 
-    std::vector<ShaderProgram*> Scene2Shaders = { shaderPrograms[3], shaderPrograms[8] };
-    createScene(2, [this, Scene2Shaders](Scene& scene) {
-        Scene2Initializer scene2Initializer(Scene2Shaders);
-        scene.initialize(scene2Initializer);
+    createScene(2, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
+        initializer = std::make_shared<Scene2Initializer>(std::vector<std::shared_ptr<ShaderProgram>>{
+            shaderPrograms[2], shaderPrograms[7]
+        });
+        scene.initialize(initializer);
         });
 
-    createScene(3, [this](Scene& scene) {
-        Scene3Initializer scene3Initializer(shaderPrograms[4]);
-        scene.initialize(scene3Initializer);
+    createScene(3, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
+        initializer = std::make_shared<Scene3Initializer>(shaderPrograms[3]);
+        scene.initialize(initializer);
         });
 
-    std::vector<ShaderProgram*> sphereShaders = { shaderPrograms[4], shaderPrograms[5], shaderPrograms[6], shaderPrograms[7] };
-    createScene(4, [this, sphereShaders](Scene& scene) {
-        Scene4Initializer scene4Initializer(sphereShaders);
-        scene.initialize(scene4Initializer);
+    createScene(4, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
+        initializer = std::make_shared<Scene4Initializer>(std::vector<std::shared_ptr<ShaderProgram>>{
+            shaderPrograms[3], shaderPrograms[4], shaderPrograms[5], shaderPrograms[6]
         });
+        scene.initialize(initializer);
+        });
+
     std::cout << "Total scenes loaded: " << scenes.size() << std::endl;
 }
+
 
 void Application::run() {
     float lastFrameTime = 0.0f;
@@ -157,6 +167,13 @@ void Application::run() {
         }
 
         Camera& currentCamera = CameraManager::getInstance().getCameraForScene(currentSceneIndex + 1);
+
+        if (currentSceneIndex == 1) { 
+            auto scene2Initializer = std::dynamic_pointer_cast<Scene2Initializer>(scenes[currentSceneIndex]->getInitializer());
+            if (scene2Initializer) {
+                scene2Initializer->update(deltaTime);
+            }
+        }
         scenes[currentSceneIndex]->render(currentCamera);
 
         glfwSwapBuffers(window);
@@ -167,21 +184,12 @@ void Application::run() {
 }
 
 void Application::cleanup() {
-    for (auto& scene : scenes) {
-        scene->clearObjects();
-        delete scene;
-    }
-    scenes.clear();
-
-    for (auto& shaderProgram : shaderPrograms) {
-        delete shaderProgram;
-    }
-    shaderPrograms.clear();
 
     delete controller;
 
     glfwTerminate();
 }
+
 
 Application::~Application() {
     cleanup();
