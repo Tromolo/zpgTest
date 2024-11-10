@@ -11,12 +11,13 @@
 class Application {
 public:
     Application(int width, int height, const char* title);
-
+    static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     ~Application();
 
     void run();  
 
 private:
+    void onWindowResized(int width, int height);
     void initializeScene(int sceneId);
     void loadShaderProgram(const std::string& vertexFile, const std::string& fragmentFile);
     void createScene(int sceneId, const std::function<void(Scene&, std::shared_ptr<SceneInitializer>&)>& initFunc);

@@ -30,3 +30,9 @@ void CameraManager::updateCameraForScene(int sceneId, const glm::vec3& position,
     camera.setPosition(position);
     camera.setTarget(target);
 }
+
+void CameraManager::updateProjectionMatrixForAllCameras(float aspectRatio) {
+    for (auto& pair : sceneCameras) {
+        pair.second.setProjectionMatrix(glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f));
+    }
+}

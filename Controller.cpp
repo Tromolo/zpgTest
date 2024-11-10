@@ -3,7 +3,7 @@
 #include "CameraManager.h"
 
 Controller::Controller(Camera& camera, std::vector<std::shared_ptr<Scene>>& scenes, GLFWwindow* window)
-    : camera(camera), scenes(scenes), window(window), cursorVisible(true) {}
+    : camera(camera), scenes(scenes), window(window), currentSceneIndex(0) {}
 
 
 Controller::~Controller()

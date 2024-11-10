@@ -52,6 +52,12 @@ void Scene::render(Camera& camera) {
     }
 }
 
+void Scene::update(float deltaTime) {
+    if (initializer) {
+        initializer->update(deltaTime);
+    }
+}
+
 void Scene::clearObjects() {
     objects.clear(); 
     lightSources.clear();

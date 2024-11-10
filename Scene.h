@@ -22,6 +22,7 @@ public:
     void initialize(std::shared_ptr<SceneInitializer> initializer);
     std::shared_ptr<SceneInitializer> getInitializer() const;
     void render(Camera& camera);
+    void update(float deltaTime);
 
     void clearObjects();
     void addObject(std::shared_ptr<DrawableObject> object);

@@ -15,6 +15,9 @@ Application::Application(int width, int height, const char* title)
         return;
     }
 
+    // Enable window resizing
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+
     window = glfwCreateWindow(width, height, title, nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
@@ -31,12 +34,22 @@ Application::Application(int width, int height, const char* title)
 
     glEnable(GL_DEPTH_TEST);
 
+    glfwSetWindowUserPointer(window, this);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
     initScene();
 
     controller = new Controller(camera, scenes, window);
     glfwSetWindowUserPointer(window, controller);
 
     glfwSetCursorPosCallback(window, Controller::mouse_callback);
+}
+
+void Application::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+    if (app) {
+        app->onWindowResized(width, height); 
+    }
 }
 
 bool Application::initGLFW() {
@@ -46,6 +59,13 @@ bool Application::initGLFW() {
 bool Application::initGLEW() {
     glewExperimental = GL_TRUE;
     return glewInit() == GLEW_OK;
+}
+
+void Application::onWindowResized(int width, int height) {
+    glViewport(0, 0, width, height);
+
+    float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+    CameraManager::getInstance().updateProjectionMatrixForAllCameras(aspectRatio);
 }
 
 void Application::initializeScene(int sceneId) {
@@ -168,12 +188,7 @@ void Application::run() {
 
         Camera& currentCamera = CameraManager::getInstance().getCameraForScene(currentSceneIndex + 1);
 
-        if (currentSceneIndex == 1) { 
-            auto scene2Initializer = std::dynamic_pointer_cast<Scene2Initializer>(scenes[currentSceneIndex]->getInitializer());
-            if (scene2Initializer) {
-                scene2Initializer->update(deltaTime);
-            }
-        }
+        scenes[currentSceneIndex]->update(deltaTime);
         scenes[currentSceneIndex]->render(currentCamera);
 
         glfwSwapBuffers(window);
@@ -184,8 +199,10 @@ void Application::run() {
 }
 
 void Application::cleanup() {
-
-    delete controller;
+    if (controller) { 
+        delete controller;
+        controller = nullptr;
+    }
 
     glfwTerminate();
 }

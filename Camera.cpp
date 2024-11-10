@@ -88,6 +88,16 @@ void Camera::setTarget(const glm::vec3& target) {
     notifyObservers();     
 }
 
+glm::mat4 projectionMatrix = glm::mat4(1.0f);
+
+void Camera::setProjectionMatrix(const glm::mat4& projection) {
+    projectionMatrix = projection;
+}
+
+glm::mat4 Camera::getProjectionMatrix() const {
+    return projectionMatrix;
+}
+
 void Camera::notifyObservers() {
     glm::mat4 viewMatrix = GetViewMatrix();
     for (const auto& observer : observers) {

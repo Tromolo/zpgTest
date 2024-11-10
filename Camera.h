@@ -41,6 +41,10 @@ public:
     void setTarget(const glm::vec3& target);
     void setPitch(float pitch);
     void updateCameraVectors();
+
+
+    void setProjectionMatrix(const glm::mat4& projection);
+    glm::mat4 getProjectionMatrix() const;
 private:
     
     std::vector<std::shared_ptr<ICameraObserver>> observers;
