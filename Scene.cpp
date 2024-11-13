@@ -20,36 +20,7 @@ std::shared_ptr<SceneInitializer> Scene::getInitializer() const {
 }
 
 void Scene::render(Camera& camera) {
-    glm::mat4 viewMatrix = camera.GetViewMatrix();
-    float aspectRatio = static_cast<float>(width) / height;
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
-    glm::vec3 cameraPosition = camera.Position;
-
-    std::cout << "number of lights: " << lightSources.size() << std::endl;
-
-    for (const auto& shaderProgram : shaderPrograms) {
-        shaderProgram->update(viewMatrix, cameraPosition);
-
-        if (!lightSources.empty()) {
-            std::vector<Light*> rawLightPointers;
-            for (const auto& light : lightSources) {
-                rawLightPointers.push_back(light.get());
-            }
-            shaderProgram->updateLights(rawLightPointers); 
-        }
-    }
-
-    for (const auto& object : objects) {
-        if (lightSources.size() == 1) {
-            object->setupUniformsL(viewMatrix, projection, cameraPosition, *lightSources[0]);
-        }
-        else {
-            object->setupUniforms(viewMatrix, projection, cameraPosition, lightSources);
-        }
-        
-
-        object->draw();
-    }
+    renderer.render(objects, shaderPrograms, lightSources, camera, width, height);
 }
 
 void Scene::update(float deltaTime) {
@@ -73,8 +44,4 @@ void Scene::addLightSource(std::shared_ptr<Light> light) {
 
 Camera& Scene::getCamera() {
     return camera;
-}
-
-const std::vector<std::shared_ptr<Light>>& Scene::getLightSources() const {
-    return lightSources;
 }

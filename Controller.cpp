@@ -65,6 +65,10 @@ void Controller::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
         else {
             firstMouse = true;
         }
+
+        /*if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+            controller->selectObjectAt(xpos, ypos);
+        }*/
     }
 }
 

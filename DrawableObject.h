@@ -17,7 +17,6 @@ public:
     void draw();
     std::shared_ptr<ShaderProgram> getShaderProgram() const;
 
-    void setupUniformsL(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition, const Light& light);
     void setupUniforms(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition, const std::vector<std::shared_ptr<Light>>& lights);
 
 private:

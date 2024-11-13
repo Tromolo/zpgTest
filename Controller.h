@@ -25,8 +25,6 @@ private:
     float lastX = 400, lastY = 300;  
 
     void updateMouseMovement(float xoffset, float yoffset);
-
-    bool cursorVisible;
 };
 
 #endif

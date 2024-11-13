@@ -27,6 +27,7 @@ void ShaderProgram::updateLight(const Light& light) {
 }
 
 void ShaderProgram::setUniforms(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) const {
+    use();
     glUniformMatrix4fv(glGetUniformLocation(id, "model"), 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(glGetUniformLocation(id, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(id, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
@@ -37,11 +38,13 @@ void ShaderProgram::setUniforms(const glm::mat4& model, const glm::mat4& view, c
 
 void ShaderProgram::setNormalMatrix(const glm::mat3& normalMatrix) const
 {
+    use();
     glUniformMatrix3fv(glGetUniformLocation(id, "normalMatrix"), 1, GL_FALSE, glm::value_ptr(normalMatrix));
 }
 
 void ShaderProgram::setVec3(const std::string& name, const glm::vec3& value) const 
 {
+    use();
     glUniform3fv(glGetUniformLocation(id, name.c_str()), 1, glm::value_ptr(value));
 }
 

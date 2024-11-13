@@ -10,6 +10,7 @@
 #include "gift.h"
 #include "bushes.h"
 #include <memory>
+#include "Renderer.h"
 
 class SceneInitializer;
 
@@ -27,10 +28,10 @@ public:
     void addObject(std::shared_ptr<DrawableObject> object);
     void addLightSource(std::shared_ptr<Light> light);
 
-    const std::vector<std::shared_ptr<Light>>& getLightSources() const;
     Camera& getCamera();
 
 private:
+    Renderer renderer;
     std::vector<std::shared_ptr<DrawableObject>> objects;  
     std::vector<std::shared_ptr<Light>> lightSources;      
     std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms;

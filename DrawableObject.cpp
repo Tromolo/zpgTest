@@ -8,7 +8,10 @@ DrawableObject::DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<Sha
 
 void DrawableObject::draw(){
 
-    model->draw(); 
+    if (shaderProgram) {
+        shaderProgram->use();  // Ensure the shader is active
+    }
+    model->draw();  // Draw the model 
 }
 
 std::shared_ptr<ShaderProgram> DrawableObject::getShaderProgram() const {
@@ -23,18 +26,6 @@ std::shared_ptr<CompositeTransformation> DrawableObject::getTransformation() con
     return transformation;
 }
 
-void DrawableObject::setupUniformsL(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition, const Light& light) {
-    glm::mat4 modelMatrix = transformation->getMatrix();
-    glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(modelMatrix)));
-
-    shaderProgram->use();
-    shaderProgram->setUniforms(modelMatrix, viewMatrix, projectionMatrix);
-    shaderProgram->setNormalMatrix(normalMatrix);
-
-    shaderProgram->setVec3("lightPosition", light.getPosition());
-    shaderProgram->setVec3("viewPosition", cameraPosition);
-}
-
 void DrawableObject::setupUniforms(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition, const std::vector<std::shared_ptr<Light>>& lights) {
     shaderProgram->use();
 
@@ -44,13 +35,25 @@ void DrawableObject::setupUniforms(const glm::mat4& viewMatrix, const glm::mat4&
     glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(modelMatrix)));
     shaderProgram->setNormalMatrix(normalMatrix);
 
-    std::vector<Light*> rawLightPointers;
-    for (const auto& light : lights) {
+    if (lights.size() == 1) {
+        const auto& light = lights[0];
         if (light) {
-            rawLightPointers.push_back(light.get());
+            shaderProgram->setVec3("lightPosition", light->getPosition());
+            shaderProgram->setVec3("lightColor", light->getColor());
+           //shaderProgram->setFloat("lightIntensity", light->getIntensity());
         }
     }
+    else {
+        std::vector<Light*> rawLightPointers;
+        for (const auto& light : lights) {
+            if (light) {
+                rawLightPointers.push_back(light.get());
+            }
+        }
+        shaderProgram->updateLights(rawLightPointers);
+    }
 
-    shaderProgram->updateLights(rawLightPointers);
+    shaderProgram->setVec3("viewPosition", cameraPosition);
 }
+
 
