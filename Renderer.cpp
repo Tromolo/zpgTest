@@ -21,23 +21,27 @@ void Renderer::render(const std::vector<std::shared_ptr<DrawableObject>>& object
             for (const auto& light : lightSources) {
                 rawLightPointers.push_back(light.get());
 
-                /*if (auto spotLight = std::dynamic_pointer_cast<SpotLight>(light)) {
-                    shaderProgram->updateSpotlight(
-                        spotLight->getPosition(),
-                        spotLight->getDirection(),
-                        spotLight->getColor(),
-                        spotLight->getIntensity(),
-                        spotLight->getCutOff(),
-                        spotLight->getOuterCutOff()
-                    );
-                }*/
+
             }
             shaderProgram->updateLights(rawLightPointers);
         }
     }
 
     for (const auto& object : objects) {
+        // Get the material of the object
+        const auto& material = object->getMaterial(); // Ensure DrawableObject has a `getMaterial` method.
+
+        // Set material properties in the shader
+        if (material) { // Check if the object has a material
+            for (const auto& shaderProgram : shaderPrograms) {
+                shaderProgram->setMaterial(*material);
+            }
+        }
+
+        // Set up uniforms for the object
         object->setupUniforms(viewMatrix, projection, cameraPosition, lightSources);
+
+        // Draw the object
         object->draw();
     }
 }

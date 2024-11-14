@@ -56,4 +56,14 @@ void DrawableObject::setupUniforms(const glm::mat4& viewMatrix, const glm::mat4&
     shaderProgram->setVec3("viewPosition", cameraPosition);
 }
 
+void DrawableObject::setMaterial(std::shared_ptr<Material> material)
+{
+    this->material = material;
+}
+
+std::shared_ptr<Material> DrawableObject::getMaterial() const
+{
+    return material;
+}
+
 

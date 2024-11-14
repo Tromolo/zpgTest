@@ -6,7 +6,9 @@
 #include "LightObserver.h"
 #include <vector>
 #include <string>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
+#include "Material.h"
 
 class ShaderProgram : public ShaderLoader, public ICameraObserver, public LightObserver {
 public:
@@ -22,6 +24,8 @@ public:
     void setUniforms(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) const;
     void setNormalMatrix(const glm::mat3& normalMatrix) const;
     void setVec3(const std::string& name, const glm::vec3& value) const;
+    
+    void setMaterial(const Material& material);
 private:
     GLuint id;
 };

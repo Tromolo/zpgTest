@@ -176,7 +176,7 @@ void Application::run() {
     float lastFrameTime = 0.0f;
     int lastSceneIndex = -1;
     while (!glfwWindowShouldClose(window)) {
-        glClearColor(0.01f, 0.01f, 0.02f, 1.0f);
+        //glClearColor(0.01f, 0.01f, 0.02f, 1.0f);
 
         float currentFrameTime = glfwGetTime();
         float deltaTime = currentFrameTime - lastFrameTime;

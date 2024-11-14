@@ -25,7 +25,7 @@ private:
     std::vector<std::shared_ptr<DrawableObject>> dynamicBushes; 
     std::vector<std::shared_ptr<DynamicPosition>> dynamicPositions;
     std::shared_ptr<SpotLight> flashlight;
-    std::shared_ptr<DirectionalLight> directionalLight;
+    std::shared_ptr<DirectionalLight> moonlight;
 
     void initializeForest(Scene& scene);
     void createGrassPlane(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram);

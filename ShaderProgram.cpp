@@ -4,6 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "SpotLight.h"
 #include "DirectionalLight.h"
+#include "Material.h"
 
 ShaderProgram::ShaderProgram(const char* vertexFile, const char* fragmentFile) {
     id = loadShader(vertexFile, fragmentFile);
@@ -20,13 +21,6 @@ void ShaderProgram::update(const glm::mat4& viewMatrix, const glm::vec3& cameraP
     glUniformMatrix4fv(glGetUniformLocation(id, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
     glUniform3fv(glGetUniformLocation(id, "viewPos"), 1, glm::value_ptr(cameraPosition));
 }
-
-/*void ShaderProgram::updateLight(const Light& light) {
-    use();
-    glUniform3fv(glGetUniformLocation(id, "lightPosition"), 1, glm::value_ptr(light.getPosition()));
-    glUniform3fv(glGetUniformLocation(id, "lightColor"), 1, glm::value_ptr(light.getColor()));
-    glUniform1f(glGetUniformLocation(id, "lightIntensity"), light.getIntensity());
-}*/
 
 void ShaderProgram::updateLight(const Light& light) {
     use();
@@ -50,9 +44,6 @@ void ShaderProgram::updateLight(const Light& light) {
         glUniform1f(glGetUniformLocation(id, "lightIntensity"), light.getIntensity());
     }
 }
-
-
-
 
 void ShaderProgram::setUniforms(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) const {
     use();
@@ -90,6 +81,13 @@ void ShaderProgram::updateLights(const std::vector<Light*>& lights) {
     glUniform1i(glGetUniformLocation(id, "numLights"), static_cast<int>(lights.size()));
 }
 
+void ShaderProgram::setMaterial(const Material& material) {
+    use();
+    glUniform3fv(glGetUniformLocation(id, "material.ambient"), 1, glm::value_ptr(material.getAmbient()));
+    glUniform3fv(glGetUniformLocation(id, "material.diffuse"), 1, glm::value_ptr(material.getDiffuse()));
+    glUniform3fv(glGetUniformLocation(id, "material.specular"), 1, glm::value_ptr(material.getSpecular()));
+    glUniform1f(glGetUniformLocation(id, "material.shininess"), material.getShininess());
+}
 
 ShaderProgram::~ShaderProgram() {
     deleteShader();

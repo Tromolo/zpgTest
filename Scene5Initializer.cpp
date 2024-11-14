@@ -28,32 +28,33 @@ void Scene5Initializer::initialize(Scene& scene) {
     
     Camera& camera = CameraManager::getInstance().getCameraForScene(5);
     
+    auto grassShader = shaders[0];
+    createGrassPlane(scene, grassShader);
+
     initializeForest(scene);
 
     flashlight = std::make_shared<SpotLight>(
         camera.Position,
         camera.Front,
-        glm::vec3(1.0f, 1.0f, 0.8f), // Warm yellow color
-        1.0f,                        // Intensity
-        glm::cos(glm::radians(5.0f)), // Inner cone
-        glm::cos(glm::radians(7.5f))  // Outer cone
+        glm::vec3(1.0f, 0.8f, 0.6f), 
+        1.5f,                     
+        glm::cos(glm::radians(7.0f)),
+        glm::cos(glm::radians(12.0f)) 
     );
 
-    auto directionalLight = std::make_shared<DirectionalLight>(
-        glm::vec3(0.0f, -1.0f, -1.0f),  // Direction
-        glm::vec3(1.0f, 1.0f, 1.0f),    // Color
-        0.5f                            // Intensity
+    auto moonlight = std::make_shared<DirectionalLight>(
+        glm::vec3(-0.2f, -1.0f, -0.3f),
+        glm::vec3(0.2f, 0.2f, 0.5f),  
+        0.3f                      
     );
-    scene.addLightSource(directionalLight);
 
+    scene.addLightSource(flashlight);
+    scene.addLightSource(moonlight);
 
     for (const auto& shaderProgram : shaders) {
         flashlight->addObserver(shaderProgram.get());
-        directionalLight->addObserver(shaderProgram.get());
+        moonlight->addObserver(shaderProgram.get());
     }
-
-    scene.addLightSource(flashlight);
-    scene.addLightSource(directionalLight);
 }
 
 void Scene5Initializer::initializeForest(Scene& scene) {
@@ -69,7 +70,20 @@ void Scene5Initializer::initializeForest(Scene& scene) {
     int bushVertexCount = sizeof(bushes) / sizeof(bushes[0]) / 6;
     auto bushModel = std::make_shared<Model>(bushes, nullptr, bushVertexCount, true);
 
-    // Add trees
+    auto treeMaterial = std::make_shared<Material>(
+        glm::vec3(0.05f, 0.05f, 0.1f), 
+        glm::vec3(0.2f, 0.3f, 0.2f),   
+        glm::vec3(0.1f, 0.1f, 0.1f),   
+        16.0f                         
+    );
+
+    auto bushMaterial = std::make_shared<Material>(
+        glm::vec3(0.05f, 0.05f, 0.08f), 
+        glm::vec3(0.15f, 0.2f, 0.15f), 
+        glm::vec3(0.1f, 0.1f, 0.1f),   
+        8.0f
+    );
+
     for (int i = 0; i < 50; ++i) {
         auto treeObject = std::make_shared<DrawableObject>(treeModel, shaders[0]);
         auto compositeTransformation = std::make_shared<CompositeTransformation>();
@@ -83,10 +97,10 @@ void Scene5Initializer::initializeForest(Scene& scene) {
         compositeTransformation->addTransformation(scale);
 
         treeObject->setTransformation(compositeTransformation);
+        treeObject->setMaterial(treeMaterial);
         scene.addObject(treeObject);
     }
 
-    // Add bushes with dynamic positions
     for (int i = 0; i < 30; ++i) {
         auto bushObject = std::make_shared<DrawableObject>(bushModel, shaders[0]);
         auto compositeTransformation = std::make_shared<CompositeTransformation>();
@@ -99,13 +113,15 @@ void Scene5Initializer::initializeForest(Scene& scene) {
         scale->setScale(glm::vec3(scaleDist(gen)));
         compositeTransformation->addTransformation(scale);
 
-        if (dynamicChance(gen) < 3) { // Add a dynamic position to some bushes
+        if (dynamicChance(gen) < 3) { 
             auto dynamicPosition = std::make_shared<DynamicPosition>(-20.0f, 20.0f, -20.0f, 20.0f, 1.0f);
             compositeTransformation->addTransformation(dynamicPosition);
             dynamicPositions.push_back(dynamicPosition);
         }
 
         bushObject->setTransformation(compositeTransformation);
+
+        bushObject->setMaterial(bushMaterial);
         scene.addObject(bushObject);
         dynamicBushes.push_back(bushObject);
     }
@@ -113,7 +129,6 @@ void Scene5Initializer::initializeForest(Scene& scene) {
 
 
 void Scene5Initializer::update(float deltaTime) {
-    // Update dynamic positions
     for (auto& dynamicPosition : dynamicPositions) {
         dynamicPosition->update(deltaTime);
     }
