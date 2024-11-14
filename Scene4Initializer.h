@@ -5,6 +5,7 @@
 #include "ShaderProgram.h"    
 #include <vector>
 #include <memory>
+#include "PointLight.h"
 
 class Scene4Initializer : public SceneInitializer {
 public:
@@ -14,6 +15,7 @@ public:
 
 private:
     std::vector<std::shared_ptr<ShaderProgram>> sphereShaders;
+    std::shared_ptr<PointLight> pointLight;
 };
 
 #endif

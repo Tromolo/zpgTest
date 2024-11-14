@@ -8,7 +8,7 @@
 class Light {
 public:
     Light(const glm::vec3& position, const glm::vec3& color, float intensity);
-
+    virtual ~Light() = default;
     glm::vec3 getPosition() const;
     glm::vec3 getColor() const;
     float getIntensity() const;
@@ -19,6 +19,7 @@ public:
 
     void addObserver(LightObserver* observer);
     void notifyObservers() const;
+
 private:
     glm::vec3 position;
     glm::vec3 color;

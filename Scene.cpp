@@ -29,8 +29,16 @@ void Scene::update(float deltaTime) {
     }
 }
 
+size_t Scene::getLightSourceCount() const {
+    return lightSources.size();
+}
+
 void Scene::clearObjects() {
     objects.clear(); 
+    clearLightSources();
+}
+
+void Scene::clearLightSources() {
     lightSources.clear();
 }
 

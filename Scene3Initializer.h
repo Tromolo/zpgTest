@@ -6,6 +6,7 @@
 #include "Light.h"             
 #include <glm/glm.hpp>
 #include <memory>
+#include "PointLight.h"
 
 class Scene3Initializer : public SceneInitializer {
 public:
@@ -14,6 +15,7 @@ public:
     void initialize(Scene& scene) override;
 
 private:
+    std::shared_ptr<PointLight> pointLight;
     std::shared_ptr<ShaderProgram> sphereShader;
 };
 

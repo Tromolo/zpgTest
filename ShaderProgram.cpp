@@ -2,6 +2,8 @@
 #include "Light.h"
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
+#include "SpotLight.h"
+#include "DirectionalLight.h"
 
 ShaderProgram::ShaderProgram(const char* vertexFile, const char* fragmentFile) {
     id = loadShader(vertexFile, fragmentFile);
@@ -19,12 +21,38 @@ void ShaderProgram::update(const glm::mat4& viewMatrix, const glm::vec3& cameraP
     glUniform3fv(glGetUniformLocation(id, "viewPos"), 1, glm::value_ptr(cameraPosition));
 }
 
-void ShaderProgram::updateLight(const Light& light) {
+/*void ShaderProgram::updateLight(const Light& light) {
     use();
     glUniform3fv(glGetUniformLocation(id, "lightPosition"), 1, glm::value_ptr(light.getPosition()));
     glUniform3fv(glGetUniformLocation(id, "lightColor"), 1, glm::value_ptr(light.getColor()));
     glUniform1f(glGetUniformLocation(id, "lightIntensity"), light.getIntensity());
+}*/
+
+void ShaderProgram::updateLight(const Light& light) {
+    use();
+
+    if (const auto* spotLight = dynamic_cast<const SpotLight*>(&light)) {
+        glUniform3fv(glGetUniformLocation(id, "spotlight.position"), 1, glm::value_ptr(spotLight->getPosition()));
+        glUniform3fv(glGetUniformLocation(id, "spotlight.direction"), 1, glm::value_ptr(spotLight->getDirection()));
+        glUniform3fv(glGetUniformLocation(id, "spotlight.color"), 1, glm::value_ptr(spotLight->getColor()));
+        glUniform1f(glGetUniformLocation(id, "spotlight.intensity"), spotLight->getIntensity());
+        glUniform1f(glGetUniformLocation(id, "spotlight.cutOff"), spotLight->getCutOff());
+        glUniform1f(glGetUniformLocation(id, "spotlight.outerCutOff"), spotLight->getOuterCutOff());
+    }
+    else if (const auto* directionalLight = dynamic_cast<const DirectionalLight*>(&light)) {
+        glUniform3fv(glGetUniformLocation(id, "directionalLight.direction"), 1, glm::value_ptr(directionalLight->getDirection()));
+        glUniform3fv(glGetUniformLocation(id, "directionalLight.color"), 1, glm::value_ptr(directionalLight->getColor()));
+        glUniform1f(glGetUniformLocation(id, "directionalLight.intensity"), directionalLight->getIntensity());
+    }
+    else {
+        glUniform3fv(glGetUniformLocation(id, "lightPosition"), 1, glm::value_ptr(light.getPosition()));
+        glUniform3fv(glGetUniformLocation(id, "lightColor"), 1, glm::value_ptr(light.getColor()));
+        glUniform1f(glGetUniformLocation(id, "lightIntensity"), light.getIntensity());
+    }
 }
+
+
+
 
 void ShaderProgram::setUniforms(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) const {
     use();

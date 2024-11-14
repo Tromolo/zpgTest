@@ -23,8 +23,9 @@ public:
     std::shared_ptr<SceneInitializer> getInitializer() const;
     void render(Camera& camera);
     void update(float deltaTime);
-
+    size_t getLightSourceCount() const;
     void clearObjects();
+    void clearLightSources();
     void addObject(std::shared_ptr<DrawableObject> object);
     void addLightSource(std::shared_ptr<Light> light);
 

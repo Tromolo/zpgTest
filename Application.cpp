@@ -5,6 +5,7 @@
 #include "Scene2Initializer.h"
 #include "Scene3Initializer.h"
 #include "Scene4Initializer.h" 
+#include "Scene5Initializer.h"
 #include "CameraManager.h"
 
 Application::Application(int width, int height, const char* title)
@@ -94,8 +95,7 @@ void Application::initializeScene(int sceneId) {
             camera.updateCameraVectors();
             break;
         default:
-            camera.setPosition(glm::vec3(0.0f, 10.0f, 0.0f));
-            camera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
+            camera.setPosition(glm::vec3(5.0f, 3.0f, 0.0f));
             break;
         }
 
@@ -135,6 +135,7 @@ void Application::initScene() {
     loadShaderProgram("vertexConstant.vert", "fragmentConstant.frag");
     loadShaderProgram("vertexBlinnPhong.vert", "fragmentBlinnPhong.frag");
     loadShaderProgram("grass.vert", "grass.frag");
+    loadShaderProgram("flashlight.vert", "flashlight.frag");
 
     createScene(1, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
         initializer = std::make_shared<Scene1Initializer>(shaderPrograms[0]); 
@@ -160,6 +161,13 @@ void Application::initScene() {
         scene.initialize(initializer);
         });
 
+    createScene(5, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
+        initializer = std::make_shared<Scene5Initializer>(std::vector<std::shared_ptr<ShaderProgram>>{
+            shaderPrograms[2], shaderPrograms[8]
+        });
+        scene.initialize(initializer);
+        });
+
     std::cout << "Total scenes loaded: " << scenes.size() << std::endl;
 }
 
@@ -168,7 +176,7 @@ void Application::run() {
     float lastFrameTime = 0.0f;
     int lastSceneIndex = -1;
     while (!glfwWindowShouldClose(window)) {
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(0.01f, 0.01f, 0.02f, 1.0f);
 
         float currentFrameTime = glfwGetTime();
         float deltaTime = currentFrameTime - lastFrameTime;

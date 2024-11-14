@@ -18,7 +18,7 @@ void Scene4Initializer::initialize(Scene& scene) {
 
     Camera& camera = CameraManager::getInstance().getCameraForScene(4);
 
-    auto pointLight = std::make_shared<Light>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5.0f);
+    auto pointLight = std::make_shared<PointLight>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5.0f);
     for (const auto& shader : sphereShaders) {
         pointLight->addObserver(shader.get());
     }
