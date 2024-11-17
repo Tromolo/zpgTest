@@ -50,6 +50,11 @@ void Scene::addLightSource(std::shared_ptr<Light> light) {
     lightSources.push_back(light);
 }
 
+const std::vector<std::shared_ptr<Light>>& Scene::getLightSources() const {
+    return lightSources;
+}
+
+
 Camera& Scene::getCamera() {
     return camera;
 }

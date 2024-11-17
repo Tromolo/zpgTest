@@ -20,6 +20,7 @@ public:
     void addObserver(LightObserver* observer);
     void notifyObservers() const;
 
+    virtual void update(float deltaTime) {}
 private:
     glm::vec3 position;
     glm::vec3 color;

@@ -47,12 +47,14 @@ void Controller::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
         static bool firstMouse = true;
         static float lastX = 400, lastY = 300;
 
+        if (firstMouse) {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-            if (firstMouse) {
-                lastX = xpos;
-                lastY = ypos;
-                firstMouse = false;
-            }
+            
 
             float xoffset = xpos - lastX;
             float yoffset = lastY - ypos;

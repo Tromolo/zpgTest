@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Model.h"
 #include "DrawableObject.h"
+#include "CameraManager.h"
 #include "CompositeTransformation.h"
 #include "Position.h"
 
@@ -9,6 +10,7 @@ Scene1Initializer::Scene1Initializer(const std::shared_ptr<ShaderProgram>& shade
     : shaderProgram(shaderProgram) {}
 
 void Scene1Initializer::initialize(Scene& scene) {
+    Camera& camera = CameraManager::getInstance().getCameraForScene(1);
     scene.clearObjects();
 
     static float triangleVertices[] = {

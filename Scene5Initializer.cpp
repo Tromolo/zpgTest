@@ -28,24 +28,23 @@ void Scene5Initializer::initialize(Scene& scene) {
     
     Camera& camera = CameraManager::getInstance().getCameraForScene(5);
     
-    auto grassShader = shaders[0];
-    createGrassPlane(scene, grassShader);
-
+    createGrassPlane(scene, shaders[0]);
     initializeForest(scene);
 
     flashlight = std::make_shared<SpotLight>(
-        camera.Position,
-        camera.Front,
-        glm::vec3(1.0f, 0.8f, 0.6f), 
-        1.5f,                     
-        glm::cos(glm::radians(7.0f)),
-        glm::cos(glm::radians(12.0f)) 
+        camera.Position, 
+        camera.Front,    
+        glm::vec3(0.0f, 0.0f, 1.0f), 
+        1.5f,                
+        glm::cos(glm::radians(12.5f)),
+        glm::cos(glm::radians(15.0f)), 
+        10.0f                      
     );
 
     auto moonlight = std::make_shared<DirectionalLight>(
         glm::vec3(-0.2f, -1.0f, -0.3f),
-        glm::vec3(0.2f, 0.2f, 0.5f),  
-        0.3f                      
+        glm::vec3(1.0f, 0.0f, 0.0f),  
+        2.7f                      
     );
 
     scene.addLightSource(flashlight);
@@ -135,8 +134,8 @@ void Scene5Initializer::update(float deltaTime) {
 
     Camera& camera = CameraManager::getInstance().getCameraForScene(5);
 
-    flashlight->setPosition(camera.Position);  
     flashlight->setDirection(camera.Front);
+    flashlight->setPosition(camera.Position);
 
 }
 

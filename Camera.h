@@ -29,7 +29,7 @@ public:
     float MovementSpeed;
     float MouseSensitivity;
     Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch);
-
+    Camera();
     glm::mat4 GetViewMatrix();
 
     void ProcessKeyboard(CameraMovement direction, float deltaTime);
@@ -40,9 +40,8 @@ public:
     void setPosition(const glm::vec3& position);
     void setTarget(const glm::vec3& target);
     void setPitch(float pitch);
+
     void updateCameraVectors();
-
-
     void setProjectionMatrix(const glm::mat4& projection);
     glm::mat4 getProjectionMatrix() const;
 private:

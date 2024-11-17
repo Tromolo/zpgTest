@@ -13,10 +13,10 @@ public:
     float getShininess() const;
 
 private:
-    glm::vec3 ambient;   // Coefficient r_a
-    glm::vec3 diffuse;   // Coefficient r_d
-    glm::vec3 specular;  // Coefficient r_s
-    float shininess;     // Shininess for specular highlight
+    glm::vec3 ambient; 
+    glm::vec3 diffuse;  
+    glm::vec3 specular; 
+    float shininess;    
 };
 
 #endif

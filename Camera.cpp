@@ -9,6 +9,17 @@ Camera::Camera(glm::vec3 position = glm::vec3(0.0f, 1.5f, 3.0f), glm::vec3 up = 
     updateCameraVectors();
 }
 
+Camera::Camera()
+    : Position(glm::vec3(0.0f, 1.5f, 5.0f)), 
+    WorldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
+    Yaw(-90.0f),  
+    Pitch(0.0f),                         
+    Front(glm::vec3(0.0f, 0.0f, -1.0f)), 
+    MovementSpeed(3.5f),                
+    MouseSensitivity(0.35f) {          
+    updateCameraVectors();
+}
+
 glm::mat4 Camera::GetViewMatrix()
 {
     return glm::lookAt(Position, Position + Front, Up);
@@ -49,11 +60,17 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
 }
 
 void Camera::updateCameraVectors()
-{ 
+{
     glm::vec3 front{};
     front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
     front.y = sin(glm::radians(Pitch));
     front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+    /*
+    front.x = (std::abs(front.x) < 1e-6) ? 0.0f : front.x;
+    front.y = (std::abs(front.y) < 1e-6) ? 0.0f : front.y;
+    front.z = (std::abs(front.z) < 1e-6) ? 0.0f : front.z;
+    */
+
     Front = glm::normalize(front);
 
     Right = glm::normalize(glm::cross(Front, WorldUp));
@@ -76,16 +93,15 @@ void Camera::removeObserver(const std::shared_ptr<ICameraObserver>& observer) {
     }
 }
 
-
 void Camera::setPosition(const glm::vec3& position) {
     Position = position;
-    notifyObservers();  
+    notifyObservers();
 }
 
 void Camera::setTarget(const glm::vec3& target) {
     Front = glm::normalize(target - Position);
-    updateCameraVectors(); 
-    notifyObservers();     
+    updateCameraVectors();
+    notifyObservers();
 }
 
 glm::mat4 projectionMatrix = glm::mat4(1.0f);

@@ -14,34 +14,21 @@ void Renderer::render(const std::vector<std::shared_ptr<DrawableObject>>& object
     glm::vec3 cameraPosition = camera.Position;
 
     for (const auto& shaderProgram : shaderPrograms) {
-        shaderProgram->update(viewMatrix, cameraPosition);
-        //cout << "Number of lights:"  << lightSources.size() << endl;
-        if (!lightSources.empty()) {
-            std::vector<Light*> rawLightPointers;
-            for (const auto& light : lightSources) {
-                rawLightPointers.push_back(light.get());
-
-
-            }
-            shaderProgram->updateLights(rawLightPointers);
-        }
+        shaderProgram->update(viewMatrix, cameraPosition);        
+        shaderProgram->updateLights(lightSources);
     }
 
     for (const auto& object : objects) {
-        // Get the material of the object
-        const auto& material = object->getMaterial(); // Ensure DrawableObject has a `getMaterial` method.
+        const auto& material = object->getMaterial(); 
 
-        // Set material properties in the shader
-        if (material) { // Check if the object has a material
+        if (material) {
             for (const auto& shaderProgram : shaderPrograms) {
                 shaderProgram->setMaterial(*material);
             }
         }
 
-        // Set up uniforms for the object
-        object->setupUniforms(viewMatrix, projection, cameraPosition, lightSources);
+        object->setupUniforms(viewMatrix, projection, cameraPosition);
 
-        // Draw the object
         object->draw();
     }
 }

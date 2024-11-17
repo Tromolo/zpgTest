@@ -1,6 +1,8 @@
 #include "DrawableObject.h"
 #include "Light.h"
 #include <glm/gtc/type_ptr.hpp>
+#include "SpotLight.h"
+#include "DirectionalLight.h"
 
 DrawableObject::DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<ShaderProgram> shaderProgram)
     : model(std::move(model)), shaderProgram(std::move(shaderProgram)), transformation(nullptr) {}
@@ -9,9 +11,9 @@ DrawableObject::DrawableObject(std::shared_ptr<Model> model, std::shared_ptr<Sha
 void DrawableObject::draw(){
 
     if (shaderProgram) {
-        shaderProgram->use();  // Ensure the shader is active
+        shaderProgram->use();
     }
-    model->draw();  // Draw the model 
+    model->draw(); 
 }
 
 std::shared_ptr<ShaderProgram> DrawableObject::getShaderProgram() const {
@@ -26,7 +28,7 @@ std::shared_ptr<CompositeTransformation> DrawableObject::getTransformation() con
     return transformation;
 }
 
-void DrawableObject::setupUniforms(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition, const std::vector<std::shared_ptr<Light>>& lights) {
+void DrawableObject::setupUniforms(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition) {
     shaderProgram->use();
 
     glm::mat4 modelMatrix = transformation->getMatrix();
@@ -35,26 +37,10 @@ void DrawableObject::setupUniforms(const glm::mat4& viewMatrix, const glm::mat4&
     glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(modelMatrix)));
     shaderProgram->setNormalMatrix(normalMatrix);
 
-    if (lights.size() == 1) {
-        const auto& light = lights[0];
-        if (light) {
-            shaderProgram->setVec3("lightPosition", light->getPosition());
-            shaderProgram->setVec3("lightColor", light->getColor());
-           //shaderProgram->setFloat("lightIntensity", light->getIntensity());
-        }
-    }
-    else {
-        std::vector<Light*> rawLightPointers;
-        for (const auto& light : lights) {
-            if (light) {
-                rawLightPointers.push_back(light.get());
-            }
-        }
-        shaderProgram->updateLights(rawLightPointers);
-    }
-
     shaderProgram->setVec3("viewPosition", cameraPosition);
 }
+
+
 
 void DrawableObject::setMaterial(std::shared_ptr<Material> material)
 {

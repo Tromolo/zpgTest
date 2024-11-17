@@ -1,4 +1,7 @@
 #include "Light.h"
+#include "SpotLight.h"
+#include <iostream>
+#include "DirectionalLight.h"
 
 Light::Light(const glm::vec3& position, const glm::vec3& color, float intensity)
     : position(position), color(color), intensity(intensity) {}
@@ -36,6 +39,18 @@ void Light::addObserver(LightObserver* observer) {
 
 void Light::notifyObservers() const {
     for (LightObserver* observer : observers) {
-        observer->updateLight(*this);
+        if (const auto* spotLight = dynamic_cast<const SpotLight*>(this)) {
+            std::cout << "SpotLight observer notified." << std::endl;
+            observer->updateLight(*spotLight);
+        }
+        else if (const auto* directionalLight = dynamic_cast<const DirectionalLight*>(this)) {
+            std::cout << "DirectionalLight observer notified." << std::endl;
+            observer->updateLight(*directionalLight);
+        }
+        else {
+            std::cout << "PointLight observer notified." << std::endl;
+            observer->updateLight(*this);
+        }
     }
 }
+

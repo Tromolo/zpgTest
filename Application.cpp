@@ -48,7 +48,7 @@ Application::Application(int width, int height, const char* title)
 void Application::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
     if (app) {
-        app->onWindowResized(width, height); 
+        app->onWindowResized(width, height);
     }
 }
 
@@ -70,44 +70,12 @@ void Application::onWindowResized(int width, int height) {
 
 void Application::initializeScene(int sceneId) {
     Camera& camera = CameraManager::getInstance().getCameraForScene(sceneId);
-
-    if (!CameraManager::getInstance().isCameraInitialized(sceneId)) {
-        switch (sceneId) {
-        case 1:
-            camera.setPosition(glm::vec3(0.0f, 0.0f, 2.0f));  
-            camera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));    
-            break;
-        case 2:
-            camera.setPosition(glm::vec3(5.0f, 3.0f, 0.0f));
-            break;
-        case 3:
-            camera.setPosition(glm::vec3(0.0f, 10.0f, 0.0f));
-            camera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
-            camera.Pitch = -90.0f;
-            camera.Yaw = 0.0f;
-            camera.updateCameraVectors(); 
-            break;
-        case 4:
-            camera.setPosition(glm::vec3(0.0f, 10.0f, 0.0f));
-            camera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
-            camera.Pitch = -90.0f;
-            camera.Yaw = 0.0f;
-            camera.updateCameraVectors();
-            break;
-        default:
-            camera.setPosition(glm::vec3(5.0f, 3.0f, 0.0f));
-            break;
-        }
-
-        CameraManager::getInstance().setCameraInitialized(sceneId);
-    }
 }
-
 
 void Application::loadShaderProgram(const std::string& vertexFile, const std::string& fragmentFile) {
     auto shaderProgram = std::make_shared<ShaderProgram>(vertexFile.c_str(), fragmentFile.c_str());
-    camera.addObserver(shaderProgram);  
-    shaderPrograms.push_back(shaderProgram); 
+    camera.addObserver(shaderProgram);
+    shaderPrograms.push_back(shaderProgram);
 }
 
 
@@ -138,7 +106,7 @@ void Application::initScene() {
     loadShaderProgram("flashlight.vert", "flashlight.frag");
 
     createScene(1, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
-        initializer = std::make_shared<Scene1Initializer>(shaderPrograms[0]); 
+        initializer = std::make_shared<Scene1Initializer>(shaderPrograms[0]);
         scene.initialize(initializer);
         });
 
@@ -189,7 +157,7 @@ void Application::run() {
 
         int currentSceneIndex = controller->getCurrentSceneIndex();
         if (currentSceneIndex != lastSceneIndex) {
-            initializeScene(currentSceneIndex + 1); 
+            initializeScene(currentSceneIndex + 1);
             lastSceneIndex = currentSceneIndex;
         }
 
@@ -206,7 +174,7 @@ void Application::run() {
 }
 
 void Application::cleanup() {
-    if (controller) { 
+    if (controller) {
         delete controller;
         controller = nullptr;
     }
@@ -217,5 +185,3 @@ void Application::cleanup() {
 Application::~Application() {
     cleanup();
 }
-
-

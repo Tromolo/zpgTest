@@ -28,7 +28,7 @@ public:
     void clearLightSources();
     void addObject(std::shared_ptr<DrawableObject> object);
     void addLightSource(std::shared_ptr<Light> light);
-
+    const std::vector<std::shared_ptr<Light>>& getLightSources() const;
     Camera& getCamera();
 
 private:

@@ -21,13 +21,6 @@ void Scene3Initializer::initialize(Scene& scene) {
     auto pointLight = std::make_shared<PointLight>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5.0f);
     pointLight->addObserver(sphereShader.get());
     scene.addLightSource(pointLight);
-    // Add the point light to the shader and scene
-
-    //auto pointLight = std::make_shared<Light>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5.0f);
-    //pointLight->addObserver(sphereShader.get());
-    //scene.addLightSource(pointLight);
-
-
 
     int sphereVertexCount = sizeof(sphere) / sizeof(sphere[0]) / 6;
     auto sphereModel = std::make_shared<Model>(sphere, nullptr, sphereVertexCount, true);

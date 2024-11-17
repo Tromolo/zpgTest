@@ -8,12 +8,47 @@ CameraManager& CameraManager::getInstance() {
 Camera& CameraManager::getCameraForScene(int sceneId) {
     auto it = sceneCameras.find(sceneId);
     if (it == sceneCameras.end()) {
-        auto result = sceneCameras.emplace(sceneId, Camera(glm::vec3(0.0f, 1.5f, 5.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f));
-        cameraInitialized[sceneId] = false; 
+        Camera newCamera;
+        switch (sceneId) {
+        case 1:
+            newCamera.setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+            newCamera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
+            break;
+        case 2:
+            newCamera.setPosition(glm::vec3(5.0f, 3.0f, 0.0f));
+            newCamera.setTarget(glm::vec3(0.0f, 3.0f, -1.0f));
+            break;
+        case 3:
+            newCamera.setPosition(glm::vec3(0.0f, 10.0f, 0.0f));
+            newCamera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
+            newCamera.Pitch = -90.0f;
+            newCamera.Yaw = 0.0f;
+            newCamera.updateCameraVectors();
+            break;
+        case 4:
+            newCamera.setPosition(glm::vec3(0.0f, 10.0f, 0.0f));
+            newCamera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
+            newCamera.Pitch = -90.0f;
+            newCamera.Yaw = 0.0f;
+            newCamera.updateCameraVectors();
+            break;
+        case 5:
+            newCamera.setPosition(glm::vec3(5.0f, 3.0f, 0.0f));
+            newCamera.Pitch = 15.0f;
+            newCamera.Yaw = -90.0f;
+            newCamera.updateCameraVectors();
+            break;
+        default:
+            newCamera.setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+            newCamera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
+        }
+        auto result = sceneCameras.emplace(sceneId, std::move(newCamera));
+        cameraInitialized[sceneId] = true;
         return result.first->second;
     }
     return it->second;
 }
+
 
 
 bool CameraManager::isCameraInitialized(int sceneId) const {
