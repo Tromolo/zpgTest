@@ -9,6 +9,7 @@
 #include <random>
 #include "CameraManager.h"
 #include "SpotLight.h"
+#include <GLFW/glfw3.h>
 
 static float grassPlaneVertices[] = {
     -20.0f, 0.0f, -20.0f,  0.0f, 1.0f, 0.0f,
@@ -34,7 +35,7 @@ void Scene5Initializer::initialize(Scene& scene) {
     flashlight = std::make_shared<SpotLight>(
         camera.Position, 
         camera.Front,    
-        glm::vec3(0.0f, 0.0f, 1.0f), 
+        glm::vec3(1.0f, 1.0f, 1.0f), 
         1.5f,                
         glm::cos(glm::radians(12.5f)),
         glm::cos(glm::radians(15.0f)), 
@@ -69,22 +70,33 @@ void Scene5Initializer::initializeForest(Scene& scene) {
     int bushVertexCount = sizeof(bushes) / sizeof(bushes[0]) / 6;
     auto bushModel = std::make_shared<Model>(bushes, nullptr, bushVertexCount, true);
 
-    auto treeMaterial = std::make_shared<Material>(
-        glm::vec3(0.05f, 0.05f, 0.1f), 
-        glm::vec3(0.2f, 0.3f, 0.2f),   
-        glm::vec3(0.1f, 0.1f, 0.1f),   
-        16.0f                         
+    auto treeMaterial1 = std::make_shared<Material>(
+        glm::vec3(0.1f, 0.05f, 0.1f),
+        glm::vec3(0.4f, 0.3f, 0.3f),
+        glm::vec3(0.2f, 0.1f, 0.1f),
+        16.0f
     );
+
+    auto treeMaterial2 = std::make_shared<Material>(
+        glm::vec3(0.2f, 0.1f, 0.05f),
+        glm::vec3(0.5f, 0.4f, 0.3f),
+        glm::vec3(0.3f, 0.2f, 0.1f),
+        32.0f
+    );
+
+    auto treeShader = shaders[1];
 
     auto bushMaterial = std::make_shared<Material>(
-        glm::vec3(0.05f, 0.05f, 0.08f), 
-        glm::vec3(0.15f, 0.2f, 0.15f), 
-        glm::vec3(0.1f, 0.1f, 0.1f),   
+        glm::vec3(0.05f, 0.1f, 0.05f),
+        glm::vec3(0.3f, 0.5f, 0.3f),
+        glm::vec3(0.2f, 0.2f, 0.1f),
         8.0f
     );
+    auto bushShader = shaders[1]; 
 
     for (int i = 0; i < 50; ++i) {
-        auto treeObject = std::make_shared<DrawableObject>(treeModel, shaders[0]);
+        auto treeObject = std::make_shared<DrawableObject>(treeModel, treeShader);
+        treeObject->setMaterial(i % 2 == 0 ? treeMaterial1 : treeMaterial2);
         auto compositeTransformation = std::make_shared<CompositeTransformation>();
 
         auto position = std::make_shared<Position>();
@@ -95,13 +107,19 @@ void Scene5Initializer::initializeForest(Scene& scene) {
         scale->setScale(glm::vec3(scaleDist(gen)));
         compositeTransformation->addTransformation(scale);
 
+        if (i % 5 == 0) {
+            auto dynamicRotation = std::make_shared<DynamicRotation>(1.0f, glm::radians(45.0f), i);
+            compositeTransformation->addTransformation(dynamicRotation);
+            dynamicRotations.push_back(dynamicRotation);
+        }
+
         treeObject->setTransformation(compositeTransformation);
-        treeObject->setMaterial(treeMaterial);
         scene.addObject(treeObject);
     }
 
     for (int i = 0; i < 30; ++i) {
-        auto bushObject = std::make_shared<DrawableObject>(bushModel, shaders[0]);
+        auto bushObject = std::make_shared<DrawableObject>(bushModel, bushShader);
+        bushObject->setMaterial(bushMaterial);
         auto compositeTransformation = std::make_shared<CompositeTransformation>();
 
         auto position = std::make_shared<Position>();
@@ -113,14 +131,13 @@ void Scene5Initializer::initializeForest(Scene& scene) {
         compositeTransformation->addTransformation(scale);
 
         if (dynamicChance(gen) < 3) { 
-            auto dynamicPosition = std::make_shared<DynamicPosition>(-20.0f, 20.0f, -20.0f, 20.0f, 1.0f);
+            auto dynamicPosition = std::make_shared<DynamicPosition>(-5.0f, 10.0f, -5.0f, 10.0f, 2.0f);
             compositeTransformation->addTransformation(dynamicPosition);
             dynamicPositions.push_back(dynamicPosition);
         }
 
         bushObject->setTransformation(compositeTransformation);
 
-        bushObject->setMaterial(bushMaterial);
         scene.addObject(bushObject);
         dynamicBushes.push_back(bushObject);
     }
@@ -128,8 +145,14 @@ void Scene5Initializer::initializeForest(Scene& scene) {
 
 
 void Scene5Initializer::update(float deltaTime) {
+    float time = glfwGetTime();
+
     for (auto& dynamicPosition : dynamicPositions) {
         dynamicPosition->update(deltaTime);
+    }
+
+    for (auto& dynamicRotation : dynamicRotations) {
+        dynamicRotation->update(time);
     }
 
     Camera& camera = CameraManager::getInstance().getCameraForScene(5);

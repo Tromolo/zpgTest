@@ -15,7 +15,7 @@ void Renderer::render(const std::vector<std::shared_ptr<DrawableObject>>& object
 
     for (const auto& shaderProgram : shaderPrograms) {
         shaderProgram->update(viewMatrix, cameraPosition);        
-        shaderProgram->updateLights(lightSources);
+        shaderProgram->updateLights(lightSources); //TODO: fix scene2 and you can remove this change Light in there for Point/Spot/Directional, not enough time now 
     }
 
     for (const auto& object : objects) {

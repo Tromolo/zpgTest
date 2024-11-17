@@ -10,6 +10,7 @@
 #include <vector>
 #include "SpotLight.h"
 #include "DirectionalLight.h"
+#include "DynamicRotation.h"
 
 class Scene5Initializer : public SceneInitializer {
 public:
@@ -24,6 +25,7 @@ private:
 
     std::vector<std::shared_ptr<DrawableObject>> dynamicBushes; 
     std::vector<std::shared_ptr<DynamicPosition>> dynamicPositions;
+    std::vector<std::shared_ptr<DynamicRotation>> dynamicRotations;
     std::shared_ptr<SpotLight> flashlight;
     std::shared_ptr<DirectionalLight> moonlight;
 

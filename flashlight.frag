@@ -26,14 +26,14 @@ in vec3 fragPosition;
 in vec3 fragNormal;   
 in vec3 vertexColor;  
 
-// Output color
+
 out vec4 FragColor;
 
 void main() {
     vec3 norm = normalize(fragNormal);
     vec3 viewDir = normalize(viewPosition - fragPosition);
 
-    vec3 ambient = vec3(0.1); // Ambient intensity; adjust as needed
+    vec3 ambient = vec3(0.1); 
 
     vec3 spotlightDir = normalize(spotlight.position - fragPosition); 
     float theta = dot(spotlightDir, normalize(-spotlight.direction)); 

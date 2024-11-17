@@ -71,7 +71,7 @@ void Scene2Initializer::initialize(Scene& scene) {
     auto giftModel = std::make_shared<Model>(gift, nullptr, giftVertexCount, true);
 
     for (int i = 0; i < 50; ++i) {
-        auto treeObject = std::make_shared<DrawableObject>(treeModel, scene2Shaders[0]);
+        auto treeObject = std::make_shared<DrawableObject>(treeModel, scene2Shaders[1]);
         auto compositeTransformation = std::make_shared<CompositeTransformation>();
 
         auto position = std::make_shared<Position>();
@@ -93,7 +93,7 @@ void Scene2Initializer::initialize(Scene& scene) {
     }
 
     for (int i = 0; i < 50; ++i) {
-        auto bushObject = std::make_shared<DrawableObject>(bushModel, scene2Shaders[0]);
+        auto bushObject = std::make_shared<DrawableObject>(bushModel, scene2Shaders[1]);
         auto compositeTransformation = std::make_shared<CompositeTransformation>();
 
         if (i % 25 == 0) {
@@ -120,7 +120,7 @@ void Scene2Initializer::initialize(Scene& scene) {
     }
 
     for (int i = 0; i < 20; ++i) {
-        auto giftObject = std::make_shared<DrawableObject>(giftModel, scene2Shaders[0]);
+        auto giftObject = std::make_shared<DrawableObject>(giftModel, scene2Shaders[1]);
         auto compositeTransformation = std::make_shared<CompositeTransformation>();
 
         auto position = std::make_shared<Position>();
