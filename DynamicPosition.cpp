@@ -5,7 +5,7 @@
 DynamicPosition::DynamicPosition(float minX, float maxX, float minZ, float maxZ, float speed)
     : minX(minX), maxX(maxX), minZ(minZ), maxZ(maxZ), speed(speed),
     movementDist(-1.0f, 1.0f), randomEngine(std::random_device{}()) {
-    direction = glm::normalize(glm::vec3(movementDist(randomEngine), 0.0f, movementDist(randomEngine)));
+    direction = glm::normalize(glm::vec3(movementDist(randomEngine), 0.01f, movementDist(randomEngine)));
 }
 
 void DynamicPosition::update(float deltaTime) {

@@ -10,7 +10,7 @@ public:
     glm::vec3 getPosition() const;
     glm::mat4 getMatrix() const override;
 
-private:
+protected:
     glm::vec3 position;
 };
 

@@ -10,16 +10,9 @@
 #include "CameraManager.h"
 #include "SpotLight.h"
 #include <GLFW/glfw3.h>
+#include "Textures.h"
+#include "Plain.h"
 
-static float grassPlaneVertices[] = {
-    -20.0f, 0.0f, -20.0f,  0.0f, 1.0f, 0.0f,
-     20.0f, 0.0f, -20.0f,  0.0f, 1.0f, 0.0f,
-    -20.0f, 0.0f,  20.0f,  0.0f, 1.0f, 0.0f,
-
-     20.0f, 0.0f, -20.0f,  0.0f, 1.0f, 0.0f,
-     20.0f, 0.0f,  20.0f,  0.0f, 1.0f, 0.0f,
-    -20.0f, 0.0f,  20.0f,  0.0f, 1.0f, 0.0f
-};
 
 Scene5Initializer::Scene5Initializer(const std::vector<std::shared_ptr<ShaderProgram>>& shaders)
     : shaders(shaders) {}
@@ -28,8 +21,8 @@ void Scene5Initializer::initialize(Scene& scene) {
     scene.clearObjects();
     
     Camera& camera = CameraManager::getInstance().getCameraForScene(5);
-    
-    createGrassPlane(scene, shaders[0]);
+    auto grassShaderScene5 = shaders[0];
+    createGrassPlane(scene, grassShaderScene5);
     initializeForest(scene);
 
     flashlight = std::make_shared<SpotLight>(
@@ -43,10 +36,11 @@ void Scene5Initializer::initialize(Scene& scene) {
     );
 
     auto moonlight = std::make_shared<DirectionalLight>(
-        glm::vec3(-0.2f, -1.0f, -0.3f),
-        glm::vec3(1.0f, 0.0f, 0.0f),  
-        2.7f                      
+        glm::vec3(-0.2f, -1.0f, -0.3f), 
+        glm::vec3(0.6f, 0.6f, 0.8f),    
+        10.0f                            
     );
+
 
     scene.addLightSource(flashlight);
     scene.addLightSource(moonlight);
@@ -65,33 +59,35 @@ void Scene5Initializer::initializeForest(Scene& scene) {
     std::uniform_int_distribution<int> dynamicChance(0, 10);
 
     int treeVertexCount = sizeof(tree) / sizeof(tree[0]) / 6;
-    auto treeModel = std::make_shared<Model>(tree, nullptr, treeVertexCount, true);
+    auto treeModel = std::make_shared<Model>(tree, nullptr, nullptr, treeVertexCount, true, POSITION | NORMAL);
 
     int bushVertexCount = sizeof(bushes) / sizeof(bushes[0]) / 6;
-    auto bushModel = std::make_shared<Model>(bushes, nullptr, bushVertexCount, true);
+    auto bushModel = std::make_shared<Model>(bushes, nullptr, nullptr, bushVertexCount, true, POSITION | NORMAL);
 
     auto treeMaterial1 = std::make_shared<Material>(
-        glm::vec3(0.1f, 0.05f, 0.1f),
-        glm::vec3(0.4f, 0.3f, 0.3f),
-        glm::vec3(0.2f, 0.1f, 0.1f),
-        16.0f
+        glm::vec3(0.02f, 0.01f, 0.02f), // Dark ambient reflectivity
+        glm::vec3(0.1f, 0.05f, 0.1f),  // Low diffuse reflectivity
+        glm::vec3(0.1f, 0.1f, 0.1f),   // Dim specular highlights
+        16.0f                          // Moderate shininess
     );
 
     auto treeMaterial2 = std::make_shared<Material>(
-        glm::vec3(0.2f, 0.1f, 0.05f),
-        glm::vec3(0.5f, 0.4f, 0.3f),
-        glm::vec3(0.3f, 0.2f, 0.1f),
-        32.0f
+        glm::vec3(0.03f, 0.02f, 0.01f), // Slightly different dark ambient
+        glm::vec3(0.15f, 0.1f, 0.05f), // Subtle diffuse
+        glm::vec3(0.1f, 0.1f, 0.1f),   // Dim highlights
+        32.0f                          // Higher shininess for sharper highlights
     );
+
 
     auto treeShader = shaders[1];
 
     auto bushMaterial = std::make_shared<Material>(
-        glm::vec3(0.05f, 0.1f, 0.05f),
-        glm::vec3(0.3f, 0.5f, 0.3f),
-        glm::vec3(0.2f, 0.2f, 0.1f),
-        8.0f
+        glm::vec3(0.02f, 0.03f, 0.02f), // Dark greenish ambient
+        glm::vec3(0.1f, 0.2f, 0.1f),    // Low green diffuse
+        glm::vec3(0.05f, 0.05f, 0.05f), // Minimal specular
+        8.0f                            // Low shininess for softer highlights
     );
+
     auto bushShader = shaders[1]; 
 
     for (int i = 0; i < 50; ++i) {
@@ -145,14 +141,13 @@ void Scene5Initializer::initializeForest(Scene& scene) {
 
 
 void Scene5Initializer::update(float deltaTime) {
-    float time = glfwGetTime();
 
     for (auto& dynamicPosition : dynamicPositions) {
         dynamicPosition->update(deltaTime);
     }
 
     for (auto& dynamicRotation : dynamicRotations) {
-        dynamicRotation->update(time);
+        dynamicRotation->update(deltaTime);
     }
 
     Camera& camera = CameraManager::getInstance().getCameraForScene(5);
@@ -163,15 +158,28 @@ void Scene5Initializer::update(float deltaTime) {
 }
 
 void Scene5Initializer::createGrassPlane(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
-    auto grassPlaneModel = std::make_shared<Model>(grassPlaneVertices, nullptr, 6, true);
+    GLuint grassTexture = Textures::loadTexture("grass.png", true); // Load the grass texture
+
+    if (grassTexture == 0) {
+        std::cerr << "Failed to load grass texture!" << std::endl;
+        return;
+    }
+
+    // Calculate the vertex count for the plane
+    int vertexCount = sizeof(plain) / (8 * sizeof(float)); // Each vertex has 8 floats (Position, Normal, UV)
+    auto grassPlaneModel = std::make_shared<Model>(plain, nullptr, nullptr, vertexCount, true, POSITION | NORMAL | UV);
 
     auto grassPlane = std::make_shared<DrawableObject>(grassPlaneModel, shaderProgram);
 
+    grassPlane->setTexture(grassTexture,false); // Assign the grass texture
+
+    // Apply transformations to position and scale the plane
     auto compositeTransformation = std::make_shared<CompositeTransformation>();
     auto position = std::make_shared<Position>();
     position->setPosition(glm::vec3(0.0f, -0.01f, 0.0f));
     compositeTransformation->addTransformation(position);
+
     grassPlane->setTransformation(compositeTransformation);
 
-    scene.addObject(grassPlane);
+    scene.addObject(grassPlane); // Add the grass plane to the scene
 }

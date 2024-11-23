@@ -38,6 +38,12 @@ Camera& CameraManager::getCameraForScene(int sceneId) {
             newCamera.Yaw = -90.0f;
             newCamera.updateCameraVectors();
             break;
+        case 6:
+            newCamera.setPosition(glm::vec3(5.0f, 3.0f, 0.0f));
+            newCamera.Pitch = 15.0f;
+            newCamera.Yaw = -90.0f;
+            newCamera.updateCameraVectors();
+            break;
         default:
             newCamera.setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
             newCamera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));

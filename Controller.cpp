@@ -2,12 +2,19 @@
 #include <iostream>
 #include "CameraManager.h"
 
+Controller* Controller::instance = nullptr; // Initialize static instance to nullptr
+
 Controller::Controller(Camera& camera, std::vector<std::shared_ptr<Scene>>& scenes, GLFWwindow* window)
-    : camera(camera), scenes(scenes), window(window), currentSceneIndex(0) {}
+    : camera(camera), scenes(scenes), window(window), currentSceneIndex(0) {
+    if (instance == nullptr) {
+        instance = this; // Set the global instance to this object
+    }
+}
 
-
-Controller::~Controller()
-{
+Controller::~Controller() {
+    if (instance == this) {
+        instance = nullptr; // Clear the global instance on destruction
+    }
 }
 
 void Controller::processInput(float deltaTime) {
@@ -26,6 +33,16 @@ void Controller::processInput(float deltaTime) {
         camera.ProcessKeyboard(CameraMovement::LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(CameraMovement::RIGHT, deltaTime);
+
+    static bool kPressed = false;
+    if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS && !kPressed) {
+        skyboxRotationEnabled = !skyboxRotationEnabled;
+        kPressed = true;
+        std::cout << "Skybox rotation: " << (skyboxRotationEnabled ? "Enabled" : "Disabled") << std::endl;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_K) == GLFW_RELEASE) {
+        kPressed = false;
+    }
 }
 
 void Controller::handleSceneSwitching() {
@@ -74,10 +91,18 @@ void Controller::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     }
 }
 
+Controller* Controller::getInstance() {
+    return instance;
+}
 
 int Controller::getCurrentSceneIndex() const
 {
     return currentSceneIndex;
+}
+
+bool Controller::isSkyboxRotationEnabled() const
+{
+    return skyboxRotationEnabled;
 }
 
 void Controller::updateMouseMovement(float xoffset, float yoffset) {

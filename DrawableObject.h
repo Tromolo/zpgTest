@@ -21,12 +21,17 @@ public:
     void setupUniforms(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition);
     void setMaterial(std::shared_ptr<Material> material);
     std::shared_ptr<Material> getMaterial() const;
+
+    void setTexture(GLuint textureID, bool isCubemap);
+    GLuint getTexture() const;
 private:
 
     std::shared_ptr<Model> model;                  
     std::shared_ptr<ShaderProgram> shaderProgram;   
     std::shared_ptr<CompositeTransformation> transformation;  
     std::shared_ptr<Material> material;
+    GLuint textureID = 0;
+    bool isCubemap = false;
 };
 
 #endif

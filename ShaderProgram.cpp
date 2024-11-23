@@ -5,6 +5,9 @@
 #include "SpotLight.h"
 #include "DirectionalLight.h"
 #include "Material.h"
+#include "PointLight.h"
+
+#define MAX_POINT_LIGHTS 4
 
 ShaderProgram::ShaderProgram(const char* vertexFile, const char* fragmentFile) {
     id = loadShader(vertexFile, fragmentFile);
@@ -36,14 +39,23 @@ void ShaderProgram::updateLight(const Light& light) {
 
     }
     else if (const auto* directionalLight = dynamic_cast<const DirectionalLight*>(&light)) {
-        glUniform3fv(glGetUniformLocation(id, "directionalLight.direction"), 1, glm::value_ptr(directionalLight->getDirection()));
-        glUniform3fv(glGetUniformLocation(id, "directionalLight.color"), 1, glm::value_ptr(directionalLight->getColor()));
-        glUniform1f(glGetUniformLocation(id, "directionalLight.intensity"), directionalLight->getIntensity());
+        glUniform3fv(glGetUniformLocation(id, "directionallight.direction"), 1, glm::value_ptr(directionalLight->getDirection()));
+        glUniform3fv(glGetUniformLocation(id, "directionallight.color"), 1, glm::value_ptr(directionalLight->getColor()));
+        glUniform1f(glGetUniformLocation(id, "directionallight.intensity"), directionalLight->getIntensity());
     }
+    else if (const auto* pointLight = dynamic_cast<const PointLight*>(&light)) {
+        static int currentLightIndex = 0; 
+        if (currentLightIndex < MAX_POINT_LIGHTS) {
+            std::string baseName = "pointLights[" + std::to_string(currentLightIndex) + "].";
+            glUniform3fv(glGetUniformLocation(id, (baseName + "position").c_str()), 1, glm::value_ptr(pointLight->getPosition()));
+            glUniform3fv(glGetUniformLocation(id, (baseName + "color").c_str()), 1, glm::value_ptr(pointLight->getColor()));
+            glUniform1f(glGetUniformLocation(id, (baseName + "intensity").c_str()), pointLight->getIntensity());
+            currentLightIndex++;
+        }
+    }
+
     else {
-        glUniform3fv(glGetUniformLocation(id, "lightPosition"), 1, glm::value_ptr(light.getPosition()));
-        glUniform3fv(glGetUniformLocation(id, "lightColor"), 1, glm::value_ptr(light.getColor()));
-        glUniform1f(glGetUniformLocation(id, "lightIntensity"), light.getIntensity());
+        std::cerr << "Unknown light type passed to ShaderProgram::updateLight!" << std::endl;
     }
 }
 
@@ -81,14 +93,20 @@ void ShaderProgram::updateLights(const std::vector<std::shared_ptr<Light>>& ligh
 
     for (size_t i = 0; i < lights.size(); ++i) {
         if (lights[i]) {
-            std::string base = "lights[" + std::to_string(i) + "]";
+            std::string base = "pointLights[" + std::to_string(i) + "]";
             glUniform3fv(glGetUniformLocation(id, (base + ".position").c_str()), 1, glm::value_ptr(lights[i]->getPosition()));
             glUniform3fv(glGetUniformLocation(id, (base + ".color").c_str()), 1, glm::value_ptr(lights[i]->getColor()));
             glUniform1f(glGetUniformLocation(id, (base + ".intensity").c_str()), lights[i]->getIntensity());
         }
     }
-    glUniform1i(glGetUniformLocation(id, "numLights"), static_cast<int>(lights.size()));
+    glUniform1i(glGetUniformLocation(id, "numPointLights"), static_cast<int>(lights.size()));
 }
+
+void ShaderProgram::setUniform(const std::string& name, int value) const {
+    use();
+    glUniform1i(glGetUniformLocation(id, name.c_str()), value);
+}
+
 
 void ShaderProgram::setMaterial(const Material& material) {
     use();

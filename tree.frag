@@ -1,47 +1,51 @@
 #version 330 core
 
-struct Light {
-    vec3 position;
-    vec3 color;
-    float intensity;
+struct PointLight {
+    vec3 position;  // Position of the point light
+    vec3 color;     // Color of the light
+    float intensity; // Light intensity
 };
 
-#define MAX_LIGHTS 4
-uniform Light lights[MAX_LIGHTS];
-uniform int numLights;
-uniform vec3 viewPos;
+struct Material {
+    float shininess; // Shininess exponent
+};
 
-in vec3 FragPos;
-in vec3 Normal;
-in vec3 VertexColor;
+#define MAX_POINT_LIGHTS 4
+uniform PointLight pointLights[MAX_POINT_LIGHTS]; // Array of point lights
+uniform int numPointLights;                      // Number of active point lights
+uniform vec3 viewPos;                            // Camera/viewer position
+uniform Material material;                       // Material properties
+
+in vec3 fragPosition;  // Fragment position in world space
+in vec3 fragNormal;    // Normal at the fragment position
 
 out vec4 FragColor;
 
-void main()
-{
-    vec3 norm = normalize(Normal);
-    vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 result = vec3(0.0);
+void main() {
+    vec3 norm = normalize(fragNormal);           // Normalize the interpolated normal
+    vec3 baseColor = abs(norm);                  // Base color derived from the normal
+    vec3 viewDir = normalize(viewPos - fragPosition); // Direction to the camera
 
-    for (int i = 0; i < numLights; i++) {
-        vec3 lightDir = normalize(lights[i].position - FragPos);
+    vec3 result = baseColor * 0.2; // Base color with some ambient factor
 
-        float distance = length(lights[i].position - FragPos);
-        float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * distance * distance);
+    for (int i = 0; i < 2; i++) {
+        vec3 lightDir = normalize(pointLights[i].position - fragPosition);
 
+        // Distance-based attenuation
+        float distance = length(pointLights[i].position - fragPosition);
+        float attenuation = 1.0 / (1.0 + 0.045 * distance + 0.0075 * distance * distance);
+
+        // Diffuse lighting
         float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lights[i].color * lights[i].intensity * attenuation;
+        vec3 diffuse = diff * pointLights[i].color * pointLights[i].intensity * attenuation;
 
+        // Specular lighting (Phong model)
         vec3 reflectDir = reflect(-lightDir, norm);
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
-        vec3 specular = spec * lights[i].color * lights[i].intensity * attenuation;
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+        vec3 specular = spec * pointLights[i].color * pointLights[i].intensity * attenuation;
 
-        result += diffuse + specular;
+        result += diffuse + specular; // Add light contribution
     }
 
-    vec3 ambient = 0.05 * VertexColor;
-
-    vec3 finalColor = ambient + result;
-
-    FragColor = vec4(finalColor, 1.0);
+    FragColor = vec4(result, 1.0); // Output final fragment color
 }

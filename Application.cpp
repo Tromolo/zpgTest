@@ -7,6 +7,8 @@
 #include "Scene4Initializer.h" 
 #include "Scene5Initializer.h"
 #include "CameraManager.h"
+#include "Scene6Initializer.h"
+#include "Scene7Initializer.h"
 
 Application::Application(int width, int height, const char* title)
     : camera(glm::vec3(0.0f, 1.5f, 5.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f)
@@ -96,7 +98,7 @@ void Application::createScene(int sceneId, const std::function<void(Scene&, std:
 
 void Application::initScene() {
     loadShaderProgram("default.vert", "colorShader2.frag");
-    loadShaderProgram("default.vert", "colorShader1.frag");
+    loadShaderProgram("default.vert", "skybox.frag");
     loadShaderProgram("tree.vert", "tree.frag");
     loadShaderProgram("vertexPhong.vert", "fragmentPhong.frag");
     loadShaderProgram("vertexLambert.vert", "fragmentLambert.frag");
@@ -104,9 +106,11 @@ void Application::initScene() {
     loadShaderProgram("vertexBlinnPhong.vert", "fragmentBlinnPhong.frag");
     loadShaderProgram("grass.vert", "grass.frag");
     loadShaderProgram("flashlight.vert", "flashlight.frag");
+    loadShaderProgram("test.vert", "test.frag");
+    loadShaderProgram("skybox.vert", "skybox.frag");
 
     createScene(1, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
-        initializer = std::make_shared<Scene1Initializer>(shaderPrograms[0]);
+        initializer = std::make_shared<Scene1Initializer>(shaderPrograms[5]);
         scene.initialize(initializer);
         });
 
@@ -131,8 +135,20 @@ void Application::initScene() {
 
     createScene(5, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
         initializer = std::make_shared<Scene5Initializer>(std::vector<std::shared_ptr<ShaderProgram>>{
-            shaderPrograms[2], shaderPrograms[8]
+            shaderPrograms[0], shaderPrograms[8]
         });
+        scene.initialize(initializer);
+        });
+
+    createScene(6, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
+        initializer = std::make_shared<Scene6Initializer>(std::vector<std::shared_ptr<ShaderProgram>>{
+            shaderPrograms[0], shaderPrograms[9]
+        });
+        scene.initialize(initializer);
+        });
+
+    createScene(7, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
+        initializer = std::make_shared<Scene7Initializer>(shaderPrograms[10]);
         scene.initialize(initializer);
         });
 
@@ -162,6 +178,7 @@ void Application::run() {
         }
 
         Camera& currentCamera = CameraManager::getInstance().getCameraForScene(currentSceneIndex + 1);
+
 
         scenes[currentSceneIndex]->update(deltaTime);
         scenes[currentSceneIndex]->render(currentCamera);

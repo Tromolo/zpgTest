@@ -14,6 +14,8 @@ public:
     void handleSceneSwitching();       
     static void mouse_callback(GLFWwindow* window, double xpos, double ypos); 
     int getCurrentSceneIndex() const;
+    bool isSkyboxRotationEnabled() const;
+    static Controller* getInstance();
 private:
     Camera& camera;              
     std::vector<std::shared_ptr<Scene>>& scenes;
@@ -23,7 +25,8 @@ private:
     bool firstMouse = true;      
     bool spacePressed = false; 
     float lastX = 400, lastY = 300;  
-
+    static Controller* instance;
+    bool skyboxRotationEnabled = true;
     void updateMouseMovement(float xoffset, float yoffset);
 };
 

@@ -19,7 +19,7 @@ void Scene1Initializer::initialize(Scene& scene) {
         0.25f, -0.3333f, 0.0f
     };
 
-    auto triangleModel = std::make_shared<Model>(triangleVertices, nullptr, 3, false);
+    auto triangleModel = std::make_shared<Model>(triangleVertices, nullptr, nullptr, 3, false, POSITION);
     auto triangle = std::make_shared<DrawableObject>(triangleModel, shaderProgram);
 
     auto compositeTransformation = std::make_shared<CompositeTransformation>();

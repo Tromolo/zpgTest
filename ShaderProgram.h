@@ -25,7 +25,7 @@ public:
     void setNormalMatrix(const glm::mat3& normalMatrix) const;
     void setVec3(const std::string& name, const glm::vec3& value) const;
     void setFloat(const std::string& name, float value) const;
-
+    void setUniform(const std::string& name, int value) const;
     void setMaterial(const Material& material);
 private:
     GLuint id;

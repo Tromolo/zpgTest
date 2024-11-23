@@ -11,6 +11,7 @@
 #include <random>
 #include "DynamicRotation.h"
 #include "DynamicPosition.h"
+#include "PointLight.h"
 
 class Scene2Initializer : public SceneInitializer {
 public:
@@ -24,7 +25,7 @@ private:
     std::vector<std::shared_ptr<DynamicRotation>> dynamicRotations;
     std::vector<std::shared_ptr<DynamicPosition>> dynamicPositions;
     std::vector<std::shared_ptr<DynamicPosition>> lightDynamicPositions;
-    std::shared_ptr<Light> light1, light2;
+    std::shared_ptr<PointLight> light1, light2;
 
     std::mt19937 randomEngine;
 };

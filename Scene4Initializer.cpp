@@ -26,7 +26,7 @@ void Scene4Initializer::initialize(Scene& scene) {
 
 
     int sphereVertexCount = sizeof(sphere) / sizeof(sphere[0]) / 6;
-    auto sphereModel = std::make_shared<Model>(sphere, nullptr, sphereVertexCount, true);
+    auto sphereModel = std::make_shared<Model>(sphere, nullptr, nullptr, sphereVertexCount, true, POSITION | NORMAL);
 
     int numSpheres = 5;
     float radius = 3.0f;
