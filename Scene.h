@@ -30,6 +30,7 @@ public:
     void addLightSource(std::shared_ptr<Light> light);
     const std::vector<std::shared_ptr<Light>>& getLightSources() const;
     Camera& getCamera();
+    std::shared_ptr<DrawableObject> getSkybox() const;
 
 private:
     Renderer renderer;

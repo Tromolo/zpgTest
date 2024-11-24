@@ -11,7 +11,7 @@
 #include "Scene7Initializer.h"
 
 Application::Application(int width, int height, const char* title)
-    : camera(glm::vec3(0.0f, 1.5f, 5.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f)
+    : camera(glm::vec3(0.0f, 1.5f, 5.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f), renderer()
 {
     if (!initGLFW()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -178,8 +178,15 @@ void Application::run() {
 
         Camera& currentCamera = CameraManager::getInstance().getCameraForScene(currentSceneIndex + 1);
 
-
         scenes[currentSceneIndex]->update(deltaTime);
+
+        if (currentSceneIndex == 6) {
+            auto skybox = scenes[currentSceneIndex]->getSkybox();
+            if (skybox) {
+                renderer.renderSkybox(skybox, currentCamera, 800, 600, controller->isSkyboxRotationEnabled());
+            }
+        }
+
         scenes[currentSceneIndex]->render(currentCamera);
 
         glfwSwapBuffers(window);

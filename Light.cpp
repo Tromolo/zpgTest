@@ -39,7 +39,7 @@ void Light::addObserver(LightObserver* observer) {
 }
 
 void Light::notifyObservers() const {
-    for (LightObserver* observer : observers) {
+    /*for (LightObserver* observer : observers) {
         if (const auto* spotLight = dynamic_cast<const SpotLight*>(this)) {
             std::cout << "SpotLight observer notified." << std::endl;
             observer->updateLight(*spotLight);
@@ -52,6 +52,9 @@ void Light::notifyObservers() const {
             std::cout << "PointLight observer notified." << std::endl;
             observer->updateLight(*pointLight);
         }
+    }*/
+    for (LightObserver* observer : observers) {
+        observer->updateLight(*this);
     }
 }
 

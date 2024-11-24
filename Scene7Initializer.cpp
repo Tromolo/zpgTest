@@ -54,11 +54,10 @@ float skycube[108] = {
 Scene7Initializer::Scene7Initializer(const std::shared_ptr<ShaderProgram>& shaderProgram)
     : shaderProgram(shaderProgram), controller(controller) {}
 
+
 void Scene7Initializer::initialize(Scene& scene) {
     scene.clearObjects();
-
     createSkybox(scene, shaderProgram);
-
 }
 
 void Scene7Initializer::createSkybox(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
@@ -70,7 +69,12 @@ void Scene7Initializer::createSkybox(Scene& scene, const std::shared_ptr<ShaderP
         "posz.jpg", "negz.jpg"
         });
 
-    auto skyboxObject = std::make_shared<DrawableObject>(skyboxModel, shaderProgram);
+    if (cubemapTexture == 0) {
+        std::cerr << "Failed to load skybox cubemap!" << std::endl;
+        return;
+    }
+
+    skyboxObject = std::make_shared<DrawableObject>(skyboxModel, shaderProgram);
     skyboxObject->setTexture(cubemapTexture, true);
 
     auto compositeTransformation = std::make_shared<CompositeTransformation>();
@@ -79,7 +83,7 @@ void Scene7Initializer::createSkybox(Scene& scene, const std::shared_ptr<ShaderP
     compositeTransformation->addTransformation(dynamicRotation);
 
     auto scale = std::make_shared<Scale>();
-    scale->setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+    scale->setScale(glm::vec3(100.0f, 100.0f, 100.0f));
     compositeTransformation->addTransformation(scale);
 
     auto position = std::make_shared<Position>();
@@ -87,20 +91,16 @@ void Scene7Initializer::createSkybox(Scene& scene, const std::shared_ptr<ShaderP
     compositeTransformation->addTransformation(position);
 
     skyboxObject->setTransformation(compositeTransformation);
+
     dynamicRotations.push_back(dynamicRotation);
 
     scene.addObject(skyboxObject);
-
 }
 
-void Scene7Initializer::update(float deltaTime) {
-    if (Controller::getInstance()->isSkyboxRotationEnabled()) {
-        for (auto& dynamicRotation : dynamicRotations) {
-            dynamicRotation->update(deltaTime);
-        }
-    }
+const std::shared_ptr<DrawableObject> Scene7Initializer::getSkybox()
+{
+    return skyboxObject;
 }
-
 
 
 GLuint Scene7Initializer::loadCubemap(const std::vector<std::string>& faces) {
@@ -127,7 +127,10 @@ GLuint Scene7Initializer::loadCubemap(const std::vector<std::string>& faces) {
     return textureID;
 }
 
-
-void Scene7Initializer::setRotationEnabled(bool enabled) {
-    this->rotationEnabled = enabled;
+void Scene7Initializer::update(float deltaTime) {
+    if (Controller::getInstance()->isSkyboxRotationEnabled()) {
+        for (auto& dynamicRotation : dynamicRotations) {
+            dynamicRotation->update(deltaTime);
+        }
+    }
 }

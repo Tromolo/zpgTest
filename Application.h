@@ -7,6 +7,7 @@
 #include <vector>
 #include <GLFW/glfw3.h>
 #include "Light.h"
+#include "Renderer.h"
 
 class Application {
 public:
@@ -31,6 +32,7 @@ private:
     bool initGLEW();
     void initScene();
     void cleanup();
+    Renderer renderer;
 };
 
 #endif

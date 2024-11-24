@@ -6,7 +6,6 @@ out vec4 FragColor;
 uniform samplerCube skybox;
 
 void main() {
-    vec3 dir = normalize(fragDir);
-    vec3 color = texture(skybox, dir).rgb;
-    FragColor = vec4(color, 1.0);
+    vec3 color = texture(skybox, fragDir).rgb;
+    FragColor = vec4(color, 1.0); 
 }

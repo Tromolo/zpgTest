@@ -37,7 +37,7 @@ void Scene2Initializer::initialize(Scene& scene) {
     glm::vec3 light2Pos = glm::vec3(10.0f, 3.0f, -10.0f);
 
     light1 = std::make_shared<PointLight>(light1Pos, glm::vec3(1.0f, 0.0f, 0.0f), 4.0f);
-    light2 = std::make_shared<PointLight>(light2Pos, glm::vec3(0.0f, 0.5f, 1.0f), 2.0f);
+    light2 = std::make_shared<PointLight>(light2Pos, glm::vec3(0.0f, 0.0f, 1.0f), 2.0f);
 
     for (const auto& shaderProgram : scene2Shaders) {
         light1->addObserver(shaderProgram.get());

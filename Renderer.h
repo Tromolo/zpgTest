@@ -14,6 +14,7 @@ public:
         const std::vector<std::shared_ptr<ShaderProgram>>& shaderPrograms,
         const std::vector<std::shared_ptr<Light>>& lightSources,
         Camera& camera, float width, float height);
+    void renderSkybox(const std::shared_ptr<DrawableObject>& skybox, Camera& camera, float width, float height, bool skyboxRotationEnabled);
 };
 
 #endif

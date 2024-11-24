@@ -32,3 +32,25 @@ void Renderer::render(const std::vector<std::shared_ptr<DrawableObject>>& object
         object->draw();
     }
 }
+
+void Renderer::renderSkybox(const std::shared_ptr<DrawableObject>& skybox, Camera& camera, float width, float height, bool skyboxRotationEnabled) {
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f);
+
+    if (skyboxRotationEnabled) {
+        glm::mat4 viewMatrix = glm::mat4(glm::mat3(camera.GetViewMatrix()));
+        auto skyboxShader = skybox->getShaderProgram();
+        skyboxShader->use();
+        skyboxShader->setUniforms(glm::mat4(1.0f), viewMatrix, projection);
+    }
+    else {
+        glm::mat4 viewMatrix = camera.GetViewMatrix();
+        auto skyboxShader = skybox->getShaderProgram();
+        skyboxShader->use();
+        skybox->setupUniforms(viewMatrix, projection, camera.Position);
+    }
+
+    glDepthFunc(GL_LEQUAL);
+    skybox->draw();
+    glDepthFunc(GL_LESS);
+}
+

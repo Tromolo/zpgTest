@@ -58,3 +58,10 @@ const std::vector<std::shared_ptr<Light>>& Scene::getLightSources() const {
 Camera& Scene::getCamera() {
     return camera;
 }
+
+std::shared_ptr<DrawableObject> Scene::getSkybox() const {
+    if (!objects.empty()) {
+        return objects.back();
+    }
+    return nullptr;
+}
