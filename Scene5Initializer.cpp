@@ -65,27 +65,27 @@ void Scene5Initializer::initializeForest(Scene& scene) {
     auto bushModel = std::make_shared<Model>(bushes, nullptr, nullptr, bushVertexCount, true, POSITION | NORMAL);
 
     auto treeMaterial1 = std::make_shared<Material>(
-        glm::vec3(0.02f, 0.01f, 0.02f), // Dark ambient reflectivity
-        glm::vec3(0.1f, 0.05f, 0.1f),  // Low diffuse reflectivity
-        glm::vec3(0.1f, 0.1f, 0.1f),   // Dim specular highlights
-        16.0f                          // Moderate shininess
+        glm::vec3(0.02f, 0.01f, 0.02f),
+        glm::vec3(0.1f, 0.05f, 0.1f),
+        glm::vec3(0.1f, 0.1f, 0.1f),
+        16.0f
     );
 
     auto treeMaterial2 = std::make_shared<Material>(
-        glm::vec3(0.03f, 0.02f, 0.01f), // Slightly different dark ambient
-        glm::vec3(0.15f, 0.1f, 0.05f), // Subtle diffuse
-        glm::vec3(0.1f, 0.1f, 0.1f),   // Dim highlights
-        32.0f                          // Higher shininess for sharper highlights
+        glm::vec3(0.03f, 0.02f, 0.01f),
+        glm::vec3(0.15f, 0.1f, 0.05f),
+        glm::vec3(0.1f, 0.1f, 0.1f),
+        32.0f
     );
 
 
     auto treeShader = shaders[1];
 
     auto bushMaterial = std::make_shared<Material>(
-        glm::vec3(0.02f, 0.03f, 0.02f), // Dark greenish ambient
-        glm::vec3(0.1f, 0.2f, 0.1f),    // Low green diffuse
-        glm::vec3(0.05f, 0.05f, 0.05f), // Minimal specular
-        8.0f                            // Low shininess for softer highlights
+        glm::vec3(0.02f, 0.03f, 0.02f),
+        glm::vec3(0.1f, 0.2f, 0.1f),
+        glm::vec3(0.05f, 0.05f, 0.05f), 
+        8.0f 
     );
 
     auto bushShader = shaders[1]; 
@@ -158,22 +158,16 @@ void Scene5Initializer::update(float deltaTime) {
 }
 
 void Scene5Initializer::createGrassPlane(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
-    GLuint grassTexture = Textures::loadTexture("grass.png", true); // Load the grass texture
+    GLuint grassTexture = Textures::loadTexture("grass.png", true);
 
-    if (grassTexture == 0) {
-        std::cerr << "Failed to load grass texture!" << std::endl;
-        return;
-    }
 
-    // Calculate the vertex count for the plane
-    int vertexCount = sizeof(plain) / (8 * sizeof(float)); // Each vertex has 8 floats (Position, Normal, UV)
+    int vertexCount = sizeof(plain) / (8 * sizeof(float));
     auto grassPlaneModel = std::make_shared<Model>(plain, nullptr, nullptr, vertexCount, true, POSITION | NORMAL | UV);
 
     auto grassPlane = std::make_shared<DrawableObject>(grassPlaneModel, shaderProgram);
 
-    grassPlane->setTexture(grassTexture,false); // Assign the grass texture
+    grassPlane->setTexture(grassTexture,false);
 
-    // Apply transformations to position and scale the plane
     auto compositeTransformation = std::make_shared<CompositeTransformation>();
     auto position = std::make_shared<Position>();
     position->setPosition(glm::vec3(0.0f, -0.01f, 0.0f));
@@ -181,5 +175,5 @@ void Scene5Initializer::createGrassPlane(Scene& scene, const std::shared_ptr<Sha
 
     grassPlane->setTransformation(compositeTransformation);
 
-    scene.addObject(grassPlane); // Add the grass plane to the scene
+    scene.addObject(grassPlane);
 }

@@ -16,12 +16,3 @@ void DynamicRotation::update(float deltaTime) {
     float angle = amplitude * glm::sin(phase + index);
     setRotation(glm::vec3(0.0f, 1.0f, 0.0f), angle);
 }
-
-
-void DynamicRotation::setEnabled(bool enabled) {
-    this->enabled = enabled;
-}
-
-bool DynamicRotation::isEnabled() const {
-    return enabled;
-}

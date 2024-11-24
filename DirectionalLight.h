@@ -10,8 +10,6 @@ public:
     glm::vec3 getDirection() const;
     void setDirection(const glm::vec3& dir);
 
-   // void setupLightInShader(int index) const override;
-
 private:
     glm::vec3 direction;
 };

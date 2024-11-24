@@ -98,7 +98,6 @@ void Application::createScene(int sceneId, const std::function<void(Scene&, std:
 
 void Application::initScene() {
     loadShaderProgram("default.vert", "colorShader2.frag");
-    loadShaderProgram("default.vert", "skybox.frag");
     loadShaderProgram("tree.vert", "tree.frag");
     loadShaderProgram("vertexPhong.vert", "fragmentPhong.frag");
     loadShaderProgram("vertexLambert.vert", "fragmentLambert.frag");
@@ -110,45 +109,45 @@ void Application::initScene() {
     loadShaderProgram("skybox.vert", "skybox.frag");
 
     createScene(1, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
-        initializer = std::make_shared<Scene1Initializer>(shaderPrograms[5]);
+        initializer = std::make_shared<Scene1Initializer>(shaderPrograms[4]);
         scene.initialize(initializer);
         });
 
     createScene(2, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
         initializer = std::make_shared<Scene2Initializer>(std::vector<std::shared_ptr<ShaderProgram>>{
-            shaderPrograms[2], shaderPrograms[7]
+            shaderPrograms[1], shaderPrograms[6]
         });
         scene.initialize(initializer);
         });
 
     createScene(3, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
-        initializer = std::make_shared<Scene3Initializer>(shaderPrograms[3]);
+        initializer = std::make_shared<Scene3Initializer>(shaderPrograms[2]);
         scene.initialize(initializer);
         });
 
     createScene(4, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
         initializer = std::make_shared<Scene4Initializer>(std::vector<std::shared_ptr<ShaderProgram>>{
-            shaderPrograms[3], shaderPrograms[4], shaderPrograms[5], shaderPrograms[6]
+            shaderPrograms[2], shaderPrograms[3], shaderPrograms[4], shaderPrograms[5]
         });
         scene.initialize(initializer);
         });
 
     createScene(5, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
         initializer = std::make_shared<Scene5Initializer>(std::vector<std::shared_ptr<ShaderProgram>>{
-            shaderPrograms[0], shaderPrograms[8]
+            shaderPrograms[0], shaderPrograms[7]
         });
         scene.initialize(initializer);
         });
 
     createScene(6, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
         initializer = std::make_shared<Scene6Initializer>(std::vector<std::shared_ptr<ShaderProgram>>{
-            shaderPrograms[0], shaderPrograms[9]
+            shaderPrograms[0], shaderPrograms[8]
         });
         scene.initialize(initializer);
         });
 
     createScene(7, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
-        initializer = std::make_shared<Scene7Initializer>(shaderPrograms[10]);
+        initializer = std::make_shared<Scene7Initializer>(shaderPrograms[9]);
         scene.initialize(initializer);
         });
 

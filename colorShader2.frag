@@ -42,7 +42,6 @@ void main() {
     vec3 norm = normalize(fragNormal);                 
     vec3 viewDir = normalize(viewPosition - fragPosition); 
 
-    // Ambient light
     vec3 ambient = vec3(0.1, 0.1, 0.1); 
 
     vec3 totalLight = vec3(0.0);
@@ -62,7 +61,6 @@ void main() {
 
     totalLight += spotDiffuse + spotSpecular;
 
-    // Directional light calculations
     vec3 dirLightDir = normalize(-directionalLight.direction);
     float dirDiff = max(dot(norm, dirLightDir), 0.0);
     vec3 dirDiffuse = dirDiff * directionalLight.color * directionalLight.intensity;
@@ -73,7 +71,6 @@ void main() {
 
     totalLight += dirDiffuse + dirSpecular;
 
-    // Point light calculations
     for (int i = 0; i < numPointLights; i++) {
         vec3 pointLightDir = normalize(pointLights[i].position - fragPosition);
 
@@ -90,9 +87,8 @@ void main() {
         totalLight += pointDiffuse + pointSpecular;
     }
 
-    // Combine lighting with ambient and texture
     vec3 textureColor = texture(grassTexture, texCoords).rgb;
     vec3 finalColor = ambient + totalLight;
 
-    FragColor = vec4(finalColor * textureColor, 1.0); // Output final color
+    FragColor = vec4(finalColor * textureColor, 1.0);
 }

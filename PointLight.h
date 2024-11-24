@@ -7,7 +7,6 @@ class PointLight : public Light {
 public:
     PointLight(const glm::vec3& position, const glm::vec3& color, float intensity);
 
-   // void setupLightInShader(int index) const override;
 };
 
 #endif

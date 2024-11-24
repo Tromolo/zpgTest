@@ -11,25 +11,23 @@ Model::Model(float* vertices, float* colors, float* uvs, int vertexCount, bool i
     glBindBuffer(GL_ARRAY_BUFFER, vboVertices);
 
     if (interleaved) {
-        // Calculate stride based on attribute format
         int stride = 0;
-        if (attributeFormat & POSITION) stride += 3; // 3 floats for Position
-        if (attributeFormat & NORMAL)   stride += 3; // 3 floats for Normal
-        if (attributeFormat & UV)       stride += 2; // 2 floats for UV
+        if (attributeFormat & POSITION) stride += 3;
+        if (attributeFormat & NORMAL)   stride += 3; 
+        if (attributeFormat & UV)       stride += 2; 
 
         glBufferData(GL_ARRAY_BUFFER, vertexCount * stride * sizeof(float), vertices, GL_STATIC_DRAW);
 
         int offset = 0;
 
-        // Set up attributes dynamically based on the format
         if (attributeFormat & POSITION) {
             setupVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(offset * sizeof(float)));
-            offset += 3; // Move offset for the next attribute
+            offset += 3;
         }
 
         if (attributeFormat & NORMAL) {
             setupVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(offset * sizeof(float)));
-            offset += 3; // Move offset for the next attribute
+            offset += 3;
         }
 
         if (attributeFormat & UV) {
@@ -37,22 +35,21 @@ Model::Model(float* vertices, float* colors, float* uvs, int vertexCount, bool i
         }
     }
     else {
-        // Handle separate buffers for each attribute
         glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * sizeof(float), vertices, GL_STATIC_DRAW);
-        setupVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); // Position
+        setupVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
         if (colors != nullptr) {
             glGenBuffers(1, &vboColors);
             glBindBuffer(GL_ARRAY_BUFFER, vboColors);
             glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * sizeof(float), colors, GL_STATIC_DRAW);
-            setupVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); // Color
+            setupVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         }
 
         if (uvs != nullptr) {
             glGenBuffers(1, &vboUVs);
             glBindBuffer(GL_ARRAY_BUFFER, vboUVs);
             glBufferData(GL_ARRAY_BUFFER, vertexCount * 2 * sizeof(float), uvs, GL_STATIC_DRAW);
-            setupVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0); // UV
+            setupVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
         }
     }
 

@@ -10,12 +10,6 @@ struct SpotLight {
     float exponent;
 };
 
-struct DirectionalLight {
-    vec3 direction;
-    vec3 color;
-    float intensity;
-};
-
 struct Material {
     vec3 ambient;  
     vec3 diffuse;  
@@ -24,7 +18,6 @@ struct Material {
 };
 
 uniform SpotLight spotlight;
-uniform DirectionalLight directionalLight;
 uniform Material material; 
 uniform vec3 viewPosition; 
 
@@ -37,7 +30,9 @@ void main() {
     vec3 norm = normalize(fragNormal);
     vec3 viewDir = normalize(viewPosition - fragPosition); 
 
-    vec3 ambient = material.ambient * vec3(0.1); 
+    vec3 normalColor = norm * 0.5 + 0.5;
+
+    vec3 ambient = material.ambient * vec3(0.01);
 
     vec3 spotlightDir = normalize(spotlight.position - fragPosition);
     float theta = dot(spotlightDir, normalize(-spotlight.direction));
@@ -52,16 +47,9 @@ void main() {
     float spotSpec = pow(max(dot(viewDir, spotReflectDir), 0.0), material.shininess);
     vec3 spotSpecular = spotSpec * spotlight.color * spotlight.intensity * material.specular * spotlightFactor;
 
-    vec3 dirLightDir = normalize(-directionalLight.direction);
-    float dirDiff = max(dot(norm, dirLightDir), 0.0);
-    vec3 dirDiffuse = dirDiff * directionalLight.color * directionalLight.intensity * material.diffuse * 1.5;
+    vec3 lightResult = ambient + spotDiffuse + spotSpecular;
 
-
-    vec3 dirReflectDir = reflect(-dirLightDir, norm);
-    float dirSpec = pow(max(dot(viewDir, dirReflectDir), 0.0), material.shininess);
-    vec3 dirSpecular = dirSpec * directionalLight.color * directionalLight.intensity * material.specular;
-
-    vec3 result = ambient + spotDiffuse + spotSpecular + dirDiffuse + dirSpecular;
+    vec3 result = mix(normalColor * 0.05, lightResult, spotlightFactor);
 
     FragColor = vec4(result, 1.0); 
 }

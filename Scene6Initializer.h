@@ -18,7 +18,7 @@ public:
 private:
     std::vector<std::shared_ptr<ShaderProgram>> shaders;
 
-    void createTexturedQuad(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram);
+    void createTexture(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram);
 };
 
 #endif

@@ -65,11 +65,6 @@ void Camera::updateCameraVectors()
     front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
     front.y = sin(glm::radians(Pitch));
     front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-    /*
-    front.x = (std::abs(front.x) < 1e-6) ? 0.0f : front.x;
-    front.y = (std::abs(front.y) < 1e-6) ? 0.0f : front.y;
-    front.z = (std::abs(front.z) < 1e-6) ? 0.0f : front.z;
-    */
 
     Front = glm::normalize(front);
 

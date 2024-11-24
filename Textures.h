@@ -10,6 +10,7 @@ class Textures {
 public:
     static GLuint loadTexture(const std::string& filePath, bool generateMipmaps = true);
     static GLuint getTexture(const std::string& filePath);
+    static void setCubemapParameters();
     static void clear();
 
 private:

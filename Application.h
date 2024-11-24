@@ -27,7 +27,6 @@ private:
     std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms;
     std::vector<Light*> lightSources;
     Controller* controller;
-    bool skyboxRotationEnabled = true;
     bool initGLFW();
     bool initGLEW();
     void initScene();

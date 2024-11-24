@@ -2,18 +2,18 @@
 #include <iostream>
 #include "CameraManager.h"
 
-Controller* Controller::instance = nullptr; // Initialize static instance to nullptr
+Controller* Controller::instance = nullptr;
 
 Controller::Controller(Camera& camera, std::vector<std::shared_ptr<Scene>>& scenes, GLFWwindow* window)
     : camera(camera), scenes(scenes), window(window), currentSceneIndex(0) {
     if (instance == nullptr) {
-        instance = this; // Set the global instance to this object
+        instance = this; 
     }
 }
 
 Controller::~Controller() {
     if (instance == this) {
-        instance = nullptr; // Clear the global instance on destruction
+        instance = nullptr; 
     }
 }
 

@@ -36,8 +36,8 @@ void Scene2Initializer::initialize(Scene& scene) {
     glm::vec3 light1Pos = glm::vec3(0.0f, 2.0f, 0.0f);
     glm::vec3 light2Pos = glm::vec3(10.0f, 3.0f, -10.0f);
 
-    light1 = std::make_shared<PointLight>(light1Pos, glm::vec3(1.0f, 0.0f, 0.0f), 2.0f);
-    light2 = std::make_shared<PointLight>(light2Pos, glm::vec3(0.0f, 0.0f, 1.0f), 2.0f);
+    light1 = std::make_shared<PointLight>(light1Pos, glm::vec3(1.0f, 0.0f, 0.0f), 4.0f);
+    light2 = std::make_shared<PointLight>(light2Pos, glm::vec3(0.0f, 0.5f, 1.0f), 2.0f);
 
     for (const auto& shaderProgram : scene2Shaders) {
         light1->addObserver(shaderProgram.get());
@@ -177,11 +177,6 @@ void Scene2Initializer::update(float deltaTime) {
 
 void Scene2Initializer::createGrassPlane(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
     GLuint grassTexture = Textures::loadTexture("grass.png", true);
-
-    if (grassTexture == 0) {
-        std::cerr << "Failed to load grass texture!" << std::endl;
-        return;
-    }
 
     int vertexCount = sizeof(plain) / (8 * sizeof(float));
     auto grassPlaneModel = std::make_shared<Model>(plain, nullptr, nullptr, vertexCount, true, POSITION | NORMAL | UV);

@@ -57,17 +57,13 @@ Scene7Initializer::Scene7Initializer(const std::shared_ptr<ShaderProgram>& shade
 void Scene7Initializer::initialize(Scene& scene) {
     scene.clearObjects();
 
-    // Setup the skybox in the scene
     createSkybox(scene, shaderProgram);
 
-    //std::cout << "Skybox initialized. Press 'T' to toggle camera following." << std::endl;
 }
 
 void Scene7Initializer::createSkybox(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
-    // Create model for the skybox
     auto skyboxModel = std::make_shared<Model>(skycube, nullptr, nullptr, 36, false, POSITION);
 
-    // Load the cubemap texture
     GLuint cubemapTexture = loadCubemap({
         "posx.jpg", "negx.jpg",
         "posy.jpg", "negy.jpg",
@@ -125,11 +121,8 @@ GLuint Scene7Initializer::loadCubemap(const std::vector<std::string>& faces) {
         }
     }
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    Textures::setCubemapParameters();
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
     return textureID;
 }
