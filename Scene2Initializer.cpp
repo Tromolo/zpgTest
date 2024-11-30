@@ -26,7 +26,6 @@ void Scene2Initializer::initialize(Scene& scene) {
     auto grassShaderScene2 = scene2Shaders[1];
     createGrassPlane(scene, grassShaderScene2);
 
-
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> posDist(-20.0f, 20.0f);
@@ -148,6 +147,7 @@ void Scene2Initializer::initialize(Scene& scene) {
         giftObject->setTransformation(compositeTransformation);
         scene.addObject(giftObject);
     }
+
 }
 
 
@@ -172,8 +172,6 @@ void Scene2Initializer::update(float deltaTime) {
         }
     }
 }
-
-
 
 void Scene2Initializer::createGrassPlane(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
     GLuint grassTexture = Textures::loadTexture("grass.png", true);

@@ -107,6 +107,8 @@ void Application::initScene() {
     loadShaderProgram("flashlight.vert", "flashlight.frag");
     loadShaderProgram("test.vert", "test.frag");
     loadShaderProgram("skybox.vert", "skybox.frag");
+    loadShaderProgram("house.vert", "house.frag");
+    loadShaderProgram("login.vert", "login.frag");
 
     createScene(1, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
         initializer = std::make_shared<Scene1Initializer>(shaderPrograms[4]);
@@ -134,7 +136,7 @@ void Application::initScene() {
 
     createScene(5, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
         initializer = std::make_shared<Scene5Initializer>(std::vector<std::shared_ptr<ShaderProgram>>{
-            shaderPrograms[0], shaderPrograms[7]
+            shaderPrograms[0], shaderPrograms[7], shaderPrograms[10], shaderPrograms[11]
         });
         scene.initialize(initializer);
         });

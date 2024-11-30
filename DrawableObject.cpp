@@ -52,6 +52,7 @@ void DrawableObject::setupUniforms(const glm::mat4& viewMatrix, const glm::mat4&
     shaderProgram->setNormalMatrix(normalMatrix);
 
     shaderProgram->setVec3("viewPosition", cameraPosition);
+    shaderProgram->setVec3("objectColor", glm::vec3(0.5f, 0.7f, 1.0f));
 }
 
 

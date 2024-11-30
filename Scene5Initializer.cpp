@@ -23,6 +23,9 @@ void Scene5Initializer::initialize(Scene& scene) {
     Camera& camera = CameraManager::getInstance().getCameraForScene(5);
     auto grassShaderScene5 = shaders[0];
     createGrassPlane(scene, grassShaderScene5);
+    addHouse(scene, shaders[2]);
+    addLogin(scene, shaders[3]);
+    addZombies(scene, shaders[2]);
     initializeForest(scene);
 
     flashlight = std::make_shared<SpotLight>(
@@ -41,6 +44,21 @@ void Scene5Initializer::initialize(Scene& scene) {
         10.0f                            
     );
 
+    glm::vec3 light1Pos = glm::vec3(0.0f, 2.0f, 0.0f);
+    glm::vec3 light2Pos = glm::vec3(10.0f, 3.0f, -10.0f);
+
+    light1 = std::make_shared<PointLight>(light1Pos, glm::vec3(1.0f, 0.0f, 0.0f), 4.0f);
+    light2 = std::make_shared<PointLight>(light2Pos, glm::vec3(0.0f, 0.0f, 1.0f), 2.0f);
+
+
+    auto light1DynamicPosition = std::make_shared<DynamicPosition>(-20.0f, 20.0f, -20.0f, 20.0f, 1.0f);
+    auto light2DynamicPosition = std::make_shared<DynamicPosition>(-20.0f, 20.0f, -20.0f, 20.0f, 1.0f);
+
+    lightDynamicPositions.push_back(light1DynamicPosition);
+    lightDynamicPositions.push_back(light2DynamicPosition);
+
+    scene.addLightSource(light1);
+    scene.addLightSource(light2);
 
     scene.addLightSource(flashlight);
     scene.addLightSource(moonlight);
@@ -48,6 +66,8 @@ void Scene5Initializer::initialize(Scene& scene) {
     for (const auto& shaderProgram : shaders) {
         flashlight->addObserver(shaderProgram.get());
         moonlight->addObserver(shaderProgram.get());
+        light1->addObserver(shaderProgram.get());
+        light2->addObserver(shaderProgram.get());
     }
 }
 
@@ -150,12 +170,109 @@ void Scene5Initializer::update(float deltaTime) {
         dynamicRotation->update(deltaTime);
     }
 
+    for (size_t i = 0; i < lightDynamicPositions.size(); ++i) {
+        lightDynamicPositions[i]->update(deltaTime);
+
+        if (i == 0 && light1) {
+            light1->setPosition(lightDynamicPositions[i]->getPosition());
+        }
+        else if (i == 1 && light2) {
+            light2->setPosition(lightDynamicPositions[i]->getPosition());
+        }
+    }
+
     Camera& camera = CameraManager::getInstance().getCameraForScene(5);
 
     flashlight->setDirection(camera.Front);
     flashlight->setPosition(camera.Position);
 
 }
+
+void Scene5Initializer::addZombies(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
+    auto zombieModel = std::make_shared<Model>("zombie.obj");
+
+    GLuint zombieTexture = Textures::loadTexture("zombie.png", false);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> posXDist(-20.0f, 20.0f);
+    std::uniform_real_distribution<float> posZDist(-20.0f, 20.0f);
+    std::uniform_real_distribution<float> scaleDist(0.8f, 1.2f); 
+    std::uniform_real_distribution<float> rotationDist(0.0f, glm::radians(360.0f));
+
+    for (int i = 0; i < 10; ++i) {
+        auto zombieObject = std::make_shared<DrawableObject>(zombieModel, shaderProgram);
+
+        zombieObject->setTexture(zombieTexture, true);
+
+        auto compositeTransformation = std::make_shared<CompositeTransformation>();
+
+        auto position = std::make_shared<Position>();
+        position->setPosition(glm::vec3(posXDist(gen), 0.0f, posZDist(gen))); 
+        compositeTransformation->addTransformation(position);
+
+        auto scale = std::make_shared<Scale>();
+        scale->setScale(glm::vec3(scaleDist(gen))); 
+        compositeTransformation->addTransformation(scale);
+
+        auto rotation = std::make_shared<Rotation>();
+        rotation->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), rotationDist(gen));
+        compositeTransformation->addTransformation(rotation);
+
+        zombieObject->setTransformation(compositeTransformation);
+
+        scene.addObject(zombieObject);
+    }
+}
+
+
+void Scene5Initializer::addHouse(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
+    auto houseModel = std::make_shared<Model>("house.obj");
+
+    auto houseObject = std::make_shared<DrawableObject>(houseModel, shaderProgram);
+
+    GLuint houseTexture = Textures::loadTexture("house.png", true);
+    houseObject->setTexture(houseTexture, false);
+
+    auto compositeTransformation = std::make_shared<CompositeTransformation>();
+
+    auto position = std::make_shared<Position>();
+    position->setPosition(glm::vec3(0.0f, 0.0f, -24.0f)); 
+    compositeTransformation->addTransformation(position);
+
+    auto scale = std::make_shared<Scale>();
+    scale->setScale(glm::vec3(1.0f, 1.0f, 1.0f)); 
+    compositeTransformation->addTransformation(scale);
+
+    auto rotation = std::make_shared<Rotation>();
+    rotation->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), glm::radians(-90.0f));
+    compositeTransformation->addTransformation(rotation);
+
+    houseObject->setTransformation(compositeTransformation);
+
+    scene.addObject(houseObject);
+}
+
+void Scene5Initializer::addLogin(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
+    auto hruModel = std::make_shared<Model>("HRU0273.obj");
+
+    auto hruObject = std::make_shared<DrawableObject>(hruModel, shaderProgram);
+
+    auto compositeTransformation = std::make_shared<CompositeTransformation>();
+
+    auto position = std::make_shared<Position>();
+    position->setPosition(glm::vec3(12.0f, 0.0f, -21.0f));
+    compositeTransformation->addTransformation(position);
+
+    auto scale = std::make_shared<Scale>();
+    scale->setScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    compositeTransformation->addTransformation(scale);
+
+    hruObject->setTransformation(compositeTransformation);
+
+    scene.addObject(hruObject);
+}
+
 
 void Scene5Initializer::createGrassPlane(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
     GLuint grassTexture = Textures::loadTexture("grass.png", true);
