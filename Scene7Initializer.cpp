@@ -27,7 +27,7 @@ void Scene7Initializer::initialize(Scene& scene) {
 void Scene7Initializer::createSkybox(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
     auto skyboxModel = std::make_shared<Model>(skycube, nullptr, nullptr, 36, false, POSITION);
 
-    GLuint cubemapTexture = loadCubemap({
+    GLuint cubemapTexture = Textures::loadCubemap({
         "posx.jpg", "negx.jpg",
         "posy.jpg", "negy.jpg",
         "posz.jpg", "negz.jpg"
@@ -66,30 +66,6 @@ const std::shared_ptr<DrawableObject> Scene7Initializer::getSkybox()
     return skyboxObject;
 }
 
-
-GLuint Scene7Initializer::loadCubemap(const std::vector<std::string>& faces) {
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-    for (GLuint i = 0; i < faces.size(); i++) {
-        int width, height, channels;
-        unsigned char* data = SOIL_load_image(faces[i].c_str(), &width, &height, &channels, SOIL_LOAD_RGB);
-        if (data) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-            SOIL_free_image_data(data);
-        }
-        else {
-            std::cerr << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
-            SOIL_free_image_data(data);
-        }
-    }
-
-    Textures::setCubemapParameters();
-    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-    return textureID;
-}
 
 void Scene7Initializer::update(float deltaTime) {
 

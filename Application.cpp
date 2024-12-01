@@ -110,6 +110,7 @@ void Application::initScene() {
     loadShaderProgram("house.vert", "house.frag");
     loadShaderProgram("login.vert", "login.frag");
 
+
     createScene(1, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
         initializer = std::make_shared<Scene1Initializer>(shaderPrograms[4]);
         scene.initialize(initializer);
@@ -136,7 +137,7 @@ void Application::initScene() {
 
     createScene(5, [this](Scene& scene, std::shared_ptr<SceneInitializer>& initializer) {
         initializer = std::make_shared<Scene5Initializer>(std::vector<std::shared_ptr<ShaderProgram>>{
-            shaderPrograms[0], shaderPrograms[7], shaderPrograms[10], shaderPrograms[11]
+            shaderPrograms[0], shaderPrograms[7], shaderPrograms[10], shaderPrograms[11] , shaderPrograms[9]
         });
         scene.initialize(initializer);
         });
@@ -180,16 +181,14 @@ void Application::run() {
 
         Camera& currentCamera = CameraManager::getInstance().getCameraForScene(currentSceneIndex + 1);
 
-        scenes[currentSceneIndex]->update(deltaTime);
-
-        if (currentSceneIndex == 6) {
+        if (currentSceneIndex == 4) {
             auto skybox = scenes[currentSceneIndex]->getSkybox();
-            if (skybox) {
-                renderer.renderSkybox(skybox, currentCamera, 800, 600, controller->isSkyboxRotationEnabled());
+            if (skybox && controller->isSkyboxRotationEnabled()) {
+                renderer.renderSkybox(skybox, currentCamera, 800, 600);
             }
         }
-
-        scenes[currentSceneIndex]->render(currentCamera);
+        scenes[currentSceneIndex]->update(deltaTime);
+        scenes[currentSceneIndex]->render(currentCamera, controller->isSkyboxRotationEnabled());
 
         glfwSwapBuffers(window);
         glfwPollEvents();

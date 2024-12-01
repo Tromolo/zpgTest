@@ -12,6 +12,7 @@
 #include <GLFW/glfw3.h>
 #include "Textures.h"
 #include "Plain.h"
+#include "skycube.h"
 
 
 Scene5Initializer::Scene5Initializer(const std::vector<std::shared_ptr<ShaderProgram>>& shaders)
@@ -22,11 +23,13 @@ void Scene5Initializer::initialize(Scene& scene) {
     
     Camera& camera = CameraManager::getInstance().getCameraForScene(5);
     auto grassShaderScene5 = shaders[0];
+
     createGrassPlane(scene, grassShaderScene5);
     addHouse(scene, shaders[2]);
     addLogin(scene, shaders[3]);
     addZombies(scene, shaders[2]);
     initializeForest(scene);
+    createSkybox(scene, shaders[4]);
 
     flashlight = std::make_shared<SpotLight>(
         camera.Position, 
@@ -188,6 +191,11 @@ void Scene5Initializer::update(float deltaTime) {
 
 }
 
+const std::shared_ptr<DrawableObject> Scene5Initializer::getSkybox()
+{
+    return skyboxObject;
+}
+
 void Scene5Initializer::addZombies(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
     auto zombieModel = std::make_shared<Model>("zombie.obj");
 
@@ -203,7 +211,7 @@ void Scene5Initializer::addZombies(Scene& scene, const std::shared_ptr<ShaderPro
     for (int i = 0; i < 10; ++i) {
         auto zombieObject = std::make_shared<DrawableObject>(zombieModel, shaderProgram);
 
-        zombieObject->setTexture(zombieTexture, true);
+        zombieObject->setTexture(zombieTexture, false);
 
         auto compositeTransformation = std::make_shared<CompositeTransformation>();
 
@@ -293,4 +301,40 @@ void Scene5Initializer::createGrassPlane(Scene& scene, const std::shared_ptr<Sha
     grassPlane->setTransformation(compositeTransformation);
 
     scene.addObject(grassPlane);
+}
+
+void Scene5Initializer::createSkybox(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
+
+    auto skyboxModel = std::make_shared<Model>(skycube, nullptr, nullptr, 36, false, POSITION);
+    GLuint cubemapTexture = Textures::loadCubemap({
+        "posx.jpg", "negx.jpg", "posy.jpg", "negy.jpg", "posz.jpg", "negz.jpg"
+        });
+
+    if (cubemapTexture == 0) {
+        std::cerr << "Failed to load skybox cubemap!" << std::endl;
+        return;
+    }
+
+    skyboxObject = std::make_shared<DrawableObject>(skyboxModel, shaderProgram);
+    skyboxObject->setTexture(cubemapTexture, true);
+
+    auto compositeTransformation = std::make_shared<CompositeTransformation>();
+    auto position = std::make_shared<Position>();
+    Camera& camera = CameraManager::getInstance().getCameraForScene(5);
+    position->setPosition(camera.Position);
+
+    compositeTransformation->addTransformation(position);
+
+    auto dynamicRotation = std::make_shared<DynamicRotation>(0.1f, glm::radians(360.0f), 0);
+    compositeTransformation->addTransformation(dynamicRotation);
+
+    auto scale = std::make_shared<Scale>();
+    scale->setScale(glm::vec3(100.0f, 100.0f, 100.0f));
+    compositeTransformation->addTransformation(scale);
+
+    skyboxObject->setTransformation(compositeTransformation);
+    dynamicRotations.push_back(dynamicRotation);
+    Textures::setCubemapParameters();
+    scene.setSkybox(skyboxObject);
+    scene.addObject(skyboxObject);
 }

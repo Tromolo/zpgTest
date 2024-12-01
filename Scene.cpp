@@ -19,8 +19,9 @@ std::shared_ptr<SceneInitializer> Scene::getInitializer() const {
     return initializer; 
 }
 
-void Scene::render(Camera& camera) {
-    renderer.render(objects, shaderPrograms, lightSources, camera, width, height);
+void Scene::render(Camera& camera, bool skyboxRotationEnabled) {
+    auto skybox = getSkybox();
+    renderer.render(objects, shaderPrograms, lightSources, camera, width, height, skybox, skyboxRotationEnabled);
 }
 
 void Scene::update(float deltaTime) {
@@ -60,8 +61,10 @@ Camera& Scene::getCamera() {
 }
 
 std::shared_ptr<DrawableObject> Scene::getSkybox() const {
-    if (!objects.empty()) {
-        return objects.back();
-    }
-    return nullptr;
+    return skybox;
+}
+
+void Scene::setSkybox(const std::shared_ptr<DrawableObject>& skyboxObj)
+{
+    skybox = skyboxObj;
 }

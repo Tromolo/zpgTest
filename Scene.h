@@ -21,7 +21,7 @@ public:
 
     void initialize(std::shared_ptr<SceneInitializer> initializer);
     std::shared_ptr<SceneInitializer> getInitializer() const;
-    void render(Camera& camera);
+    void render(Camera& camera,bool skyboxRotationEnabled);
     void update(float deltaTime);
     size_t getLightSourceCount() const;
     void clearObjects();
@@ -31,7 +31,7 @@ public:
     const std::vector<std::shared_ptr<Light>>& getLightSources() const;
     Camera& getCamera();
     std::shared_ptr<DrawableObject> getSkybox() const;
-
+    void setSkybox(const std::shared_ptr<DrawableObject>& skyboxObj);
 private:
     Renderer renderer;
     std::vector<std::shared_ptr<DrawableObject>> objects;  
@@ -39,6 +39,7 @@ private:
     std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms;
     std::shared_ptr<SceneInitializer> initializer;
     Camera& camera;
+    std::shared_ptr<DrawableObject> skybox;
     int width;
     int height;
 };
