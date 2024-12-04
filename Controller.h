@@ -16,6 +16,7 @@ public:
     int getCurrentSceneIndex() const;
     bool isSkyboxRotationEnabled() const;
     static Controller* getInstance();
+    void processMouseClick(double xpos, double ypos, Camera& camera, int sceneId);
 private:
     Camera& camera;              
     std::vector<std::shared_ptr<Scene>>& scenes;

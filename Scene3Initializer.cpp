@@ -8,8 +8,6 @@
 #include "Position.h"
 #include <memory> 
 
-
-
 Scene3Initializer::Scene3Initializer(std::shared_ptr<ShaderProgram> sphereShader)
     : sphereShader(std::move(sphereShader)) {}
 

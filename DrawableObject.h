@@ -24,8 +24,11 @@ public:
 
     void setTexture(GLuint textureID, bool isCubemap);
     GLuint getTexture() const;
-private:
 
+    unsigned int getID() const;
+    void setID(unsigned int newID);
+private:
+    unsigned int id;
     std::shared_ptr<Model> model;                  
     std::shared_ptr<ShaderProgram> shaderProgram;   
     std::shared_ptr<CompositeTransformation> transformation;  

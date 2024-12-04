@@ -77,3 +77,13 @@ void DrawableObject::setTexture(GLuint textureID, bool isCubemap) {
 GLuint DrawableObject::getTexture() const {
     return textureID;
 }
+
+unsigned int DrawableObject::getID() const
+{
+    return id;
+}
+
+void DrawableObject::setID(unsigned int newID)
+{
+    id = newID;
+}

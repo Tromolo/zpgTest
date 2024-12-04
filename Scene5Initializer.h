@@ -21,6 +21,7 @@ public:
 
     void update(float deltaTime) override;
     const std::shared_ptr<DrawableObject> getSkybox();
+    void spawnTree(const glm::vec3& position, Scene& scene);
 private:
 
     std::vector<std::shared_ptr<ShaderProgram>> shaders; 

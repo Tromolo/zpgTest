@@ -72,6 +72,19 @@ void Scene5Initializer::initialize(Scene& scene) {
         light1->addObserver(shaderProgram.get());
         light2->addObserver(shaderProgram.get());
     }
+
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+    unsigned int objectID = 1;
+    for (auto& object : scene.getObjects()) {
+        object->setID(objectID++);
+        printf("Assigned stencil ID %u to object.\n", object->getID());
+    }
+
+    glDisable(GL_STENCIL_TEST); 
+
+    
 }
 
 void Scene5Initializer::initializeForest(Scene& scene) {
@@ -302,6 +315,46 @@ void Scene5Initializer::createGrassPlane(Scene& scene, const std::shared_ptr<Sha
 
     scene.addObject(grassPlane);
 }
+
+void Scene5Initializer::spawnTree(const glm::vec3& position, Scene& scene) {
+    printf("Spawning tree at position [%f, %f, %f]\n", position.x, position.y, position.z);
+
+    static std::shared_ptr<Model> treeModel = std::make_shared<Model>("tree.obj");
+    if (!treeModel) {
+        printf("Error: Failed to load tree.obj\n");
+        return;
+    }
+
+    static GLuint treeTexture = Textures::loadTexture("tree.png", true);
+    if (treeTexture == 0) {
+        printf("Error: Failed to load tree.png\n");
+        return;
+    }
+
+    auto tree = std::make_shared<DrawableObject>(treeModel, shaders[1]);
+    tree->setTexture(treeTexture, false);
+
+    auto compositeTransformation = std::make_shared<CompositeTransformation>();
+
+    auto pos = std::make_shared<Position>();
+    pos->setPosition(position);
+    compositeTransformation->addTransformation(pos);
+
+    auto scale = std::make_shared<Scale>();
+    scale->setScale(glm::vec3(0.1f));
+    compositeTransformation->addTransformation(scale);
+
+    tree->setTransformation(compositeTransformation);
+
+    static unsigned int nextID = 95; 
+    tree->setID(nextID++);
+    printf("Tree assigned ID: %u\n", tree->getID());
+
+    scene.addObject(tree);
+    printf("Tree added to scene. Total objects: %zu\n", scene.getObjects().size());
+}
+
+
 
 void Scene5Initializer::createSkybox(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram) {
 

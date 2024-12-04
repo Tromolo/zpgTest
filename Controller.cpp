@@ -1,6 +1,7 @@
 #include "Controller.h"
 #include <iostream>
 #include "CameraManager.h"
+#include "Scene5Initializer.h"
 
 Controller* Controller::instance = nullptr;
 
@@ -85,11 +86,58 @@ void Controller::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
             firstMouse = true;
         }
 
-        /*if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-            controller->selectObjectAt(xpos, ypos);
-        }*/
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+            controller->processMouseClick(xpos, ypos, camera, sceneId);
+        }
     }
 }
+
+void Controller::processMouseClick(double xpos, double ypos, Camera& camera, int sceneId) {
+    if (sceneId < 1 || sceneId > scenes.size()) {
+        printf("Invalid scene ID: %d\n", sceneId);
+        return;
+    }
+
+    Scene* currentScene = scenes[sceneId - 1].get();
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    glm::mat4 viewMatrix = camera.GetViewMatrix();
+    glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+    glm::vec4 viewportVec = glm::vec4(viewport[0], viewport[1], viewport[2], viewport[3]);
+
+    int x = static_cast<int>(xpos);
+    int y = static_cast<int>(viewport[3] - ypos);
+
+    GLbyte color[4];
+    GLfloat depth;
+    GLuint index;
+
+    glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+    glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+    glReadPixels(x, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+
+    printf("Mouse Clicked: [%d, %d], Depth: %f, Stencil Index: %u\n", x, y, depth, index);
+
+    glm::vec3 screenPos = glm::vec3(x, y, depth);
+    glm::vec3 worldPos = glm::unProject(screenPos, viewMatrix, projectionMatrix, viewportVec);
+
+    printf("World Position: [%f, %f, %f]\n", worldPos.x, worldPos.y, worldPos.z);
+
+    if (index == 1) {
+        printf("spawning a tree.\n");
+        auto initializer = std::dynamic_pointer_cast<Scene5Initializer>(currentScene->getInitializer());
+        if (initializer) {
+            initializer->spawnTree(worldPos, *currentScene);
+        }
+        else {
+            printf("Error: Scene initializer is not Scene5Initializer.\n");
+        }
+    }
+}
+
+
+
 
 Controller* Controller::getInstance() {
     return instance;

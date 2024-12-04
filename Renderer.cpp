@@ -19,7 +19,12 @@ void Renderer::render(const std::vector<std::shared_ptr<DrawableObject>>& object
         shaderProgram->updateLights(lightSources);
     }
 
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
     for (const auto& object : objects) {
+        glStencilFunc(GL_ALWAYS, object->getID(), 0xFF);
+
         if (object == skybox && skyboxRotationEnabled) {
             continue;
         }
@@ -32,9 +37,10 @@ void Renderer::render(const std::vector<std::shared_ptr<DrawableObject>>& object
         }
 
         object->setupUniforms(viewMatrix, projection, cameraPosition);
-
         object->draw();
     }
+
+    glDisable(GL_STENCIL_TEST);
 }
 
 void Renderer::renderSkybox(const std::shared_ptr<DrawableObject>& skybox, Camera& camera, float width, float height) {

@@ -15,8 +15,8 @@ GLuint Textures::loadTexture(const std::string& filePath, bool generateMipmaps) 
     GLuint textureID = SOIL_load_OGL_texture(
         filePath.c_str(),
         SOIL_LOAD_RGBA,      
-        SOIL_CREATE_NEW_ID,    
-        SOIL_FLAG_INVERT_Y     
+        0,  //SOIL_CREATE_NEW_ID,    
+        0   //SOIL_FLAG_INVERT_Y     
     );
 
     if (textureID == 0) {

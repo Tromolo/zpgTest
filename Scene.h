@@ -24,6 +24,7 @@ public:
     void render(Camera& camera,bool skyboxRotationEnabled);
     void update(float deltaTime);
     size_t getLightSourceCount() const;
+    const std::vector<std::shared_ptr<DrawableObject>>& getObjects() const;
     void clearObjects();
     void clearLightSources();
     void addObject(std::shared_ptr<DrawableObject> object);

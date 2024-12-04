@@ -55,7 +55,7 @@ void ShaderProgram::updateLight(const Light& light) {
     }
 
     else {
-        std::cerr << "Unknown light type passed to ShaderProgram::updateLight!" << std::endl;
+        std::cerr << "Unknown light passed to ShaderProgram!" << std::endl;
     }
 }
 
