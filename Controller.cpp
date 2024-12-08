@@ -102,41 +102,51 @@ void Controller::processMouseClick(double xpos, double ypos, Camera& camera, int
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
 
+    float aspectRatio = static_cast<float>(viewport[2]) / static_cast<float>(viewport[3]);
     glm::mat4 viewMatrix = camera.GetViewMatrix();
-    glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+    glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
     glm::vec4 viewportVec = glm::vec4(viewport[0], viewport[1], viewport[2], viewport[3]);
 
     int x = static_cast<int>(xpos);
     int y = static_cast<int>(viewport[3] - ypos);
 
-    GLbyte color[4];
     GLfloat depth;
     GLuint index;
 
-    glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
     glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
     glReadPixels(x, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
-
-    printf("Mouse Clicked: [%d, %d], Depth: %f, Stencil Index: %u\n", x, y, depth, index);
 
     glm::vec3 screenPos = glm::vec3(x, y, depth);
     glm::vec3 worldPos = glm::unProject(screenPos, viewMatrix, projectionMatrix, viewportVec);
 
-    printf("World Position: [%f, %f, %f]\n", worldPos.x, worldPos.y, worldPos.z);
+    printf("Screen Pos: [%f, %f, %f]\n", screenPos.x, screenPos.y, screenPos.z);
+    printf("World Pos: [%f, %f, %f]\n", worldPos.x, worldPos.y, worldPos.z);
+    printf("Stencil Index: %u\n", index);
 
     if (index == 1) {
-        printf("spawning a tree.\n");
+        printf("Index 1 detected. Spawning a tree at this position.\n");
         auto initializer = std::dynamic_pointer_cast<Scene5Initializer>(currentScene->getInitializer());
         if (initializer) {
             initializer->spawnTree(worldPos, *currentScene);
         }
-        else {
-            printf("Error: Scene initializer is not Scene5Initializer.\n");
+    }
+    else if (index != 0) {
+        printf("Object with stencil ID %u was clicked. Attempting to remove it.\n", index);
+        auto& objects = currentScene->getObjects();
+        auto it = std::remove_if(objects.begin(), objects.end(), [index](const std::shared_ptr<DrawableObject>& obj) {
+            if (obj->getID() == index) {
+                printf("Removing object with ID %u from the scene.\n", index);
+                return true;
+            }
+            return false;
+            });
+
+        if (it != objects.end()) {
+            objects.erase(it, objects.end());
+            printf("Object with ID %u has been removed.\n", index);
         }
     }
 }
-
-
 
 
 Controller* Controller::getInstance() {

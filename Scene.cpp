@@ -34,8 +34,8 @@ size_t Scene::getLightSourceCount() const {
     return lightSources.size();
 }
 
-const std::vector<std::shared_ptr<DrawableObject>>& Scene::getObjects() const {
-    return objects;
+std::vector<std::shared_ptr<DrawableObject>>& Scene::getObjects() {
+    return objects;  
 }
 
 void Scene::clearObjects() {

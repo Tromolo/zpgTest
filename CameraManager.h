@@ -11,10 +11,6 @@ public:
 
     Camera& getCameraForScene(int sceneId);
 
-    bool isCameraInitialized(int sceneId) const;
-    void setCameraInitialized(int sceneId);
-
-    void updateCameraForScene(int sceneId, const glm::vec3& position, const glm::vec3& target);
     void updateProjectionMatrixForAllCameras(float aspectRatio);
 private:
     CameraManager() = default;

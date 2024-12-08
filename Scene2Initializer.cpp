@@ -206,57 +206,57 @@ void Scene2Initializer::addCustomTransformedTree(Scene& scene, const std::shared
 
     auto compositeTransformation = std::make_shared<CompositeTransformation>();
 
-    // **P** - Position 1
+    // Position 1
     auto pos1 = std::make_shared<Position>();
     pos1->setPosition(position); 
     compositeTransformation->addTransformation(pos1);
 
-    // **R** - Rotation 1
+    // Rotation 1
     auto rot1 = std::make_shared<Rotation>();
     rot1->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), glm::radians(45.0f));
     compositeTransformation->addTransformation(rot1);
 
-    // **S** - Scale
+    // Scale
     auto scale = std::make_shared<Scale>();
     scale->setScale(glm::vec3(1.0f, 1.2f, 1.0f));
     compositeTransformation->addTransformation(scale);
 
-    // **P** - Position 2
+    // Position 2
     auto pos2 = std::make_shared<Position>();
     pos2->setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
     compositeTransformation->addTransformation(pos2);
 
-    // **P** - Position 3
+    // Position 3
     auto pos3 = std::make_shared<Position>();
     pos3->setPosition(glm::vec3(0.0f, 3.0f, 0.0f));
     compositeTransformation->addTransformation(pos3);
 
-    // **P** - Position 4
+    // Position 4
     auto pos4 = std::make_shared<Position>();
     pos4->setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
     compositeTransformation->addTransformation(pos4);
 
-    // **R** - Rotation 2
+    // Rotation 2
     auto rot2 = std::make_shared<Rotation>();
     rot2->setRotation(glm::vec3(1.0f, 0.0f, 0.0f), glm::radians(30.0f));
     compositeTransformation->addTransformation(rot2);
 
-    // **R** - Rotation 3
+    // Rotation 3
     auto rot3 = std::make_shared<Rotation>();
     rot3->setRotation(glm::vec3(0.0f, 0.0f, 1.0f), glm::radians(90.0f));
     compositeTransformation->addTransformation(rot3);
 
-    // **R** - Rotation 4
+    // Rotation 4
     auto rot4 = std::make_shared<Rotation>();
     rot4->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), glm::radians(60.0f));
     compositeTransformation->addTransformation(rot4);
 
-    // **P** - Position 5
+    // Position 5
     auto pos5 = std::make_shared<Position>();
     pos5->setPosition(glm::vec3(-5.0f, 2.0f, 0.0f));  
     compositeTransformation->addTransformation(pos5);
 
-    // **P** - Position 6
+    // Position 6
     auto pos6 = std::make_shared<Position>();
     pos6->setPosition(glm::vec3(10.0f, 10.0f, 0.0f)); 
     compositeTransformation->addTransformation(pos6);
