@@ -181,7 +181,7 @@ void Application::run() {
 
         Camera& currentCamera = CameraManager::getInstance().getCameraForScene(currentSceneIndex + 1);
 
-        if (currentSceneIndex == 4) {
+        if (currentSceneIndex == 4 ) {
             auto skybox = scenes[currentSceneIndex]->getSkybox();
             if (skybox && controller->isSkyboxRotationEnabled()) {
                 renderer.renderSkybox(skybox, currentCamera, 800, 600);

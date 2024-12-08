@@ -26,6 +26,10 @@ void Scene2Initializer::initialize(Scene& scene) {
     auto grassShaderScene2 = scene2Shaders[1];
     createGrassPlane(scene, grassShaderScene2);
 
+    // P R S P P P R R R P P 
+    glm::vec3 initialPosition(0.0f, 0.0f, 0.0f);
+    addCustomTransformedTree(scene, scene2Shaders[1], initialPosition);
+
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> posDist(-20.0f, 20.0f);
@@ -191,4 +195,73 @@ void Scene2Initializer::createGrassPlane(Scene& scene, const std::shared_ptr<Sha
     grassPlane->setTransformation(compositeTransformation);
 
     scene.addObject(grassPlane);
+}
+
+void Scene2Initializer::addCustomTransformedTree(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram, const glm::vec3& position) {
+    static std::shared_ptr<Model> treeModel = std::make_shared<Model>("tree.obj");
+    static GLuint treeTexture = Textures::loadTexture("tree.png", true);
+
+    auto tree = std::make_shared<DrawableObject>(treeModel, shaderProgram);
+    tree->setTexture(treeTexture, false);
+
+    auto compositeTransformation = std::make_shared<CompositeTransformation>();
+
+    // **P** - Position 1
+    auto pos1 = std::make_shared<Position>();
+    pos1->setPosition(position); 
+    compositeTransformation->addTransformation(pos1);
+
+    // **R** - Rotation 1
+    auto rot1 = std::make_shared<Rotation>();
+    rot1->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), glm::radians(45.0f));
+    compositeTransformation->addTransformation(rot1);
+
+    // **S** - Scale
+    auto scale = std::make_shared<Scale>();
+    scale->setScale(glm::vec3(1.0f, 1.2f, 1.0f));
+    compositeTransformation->addTransformation(scale);
+
+    // **P** - Position 2
+    auto pos2 = std::make_shared<Position>();
+    pos2->setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+    compositeTransformation->addTransformation(pos2);
+
+    // **P** - Position 3
+    auto pos3 = std::make_shared<Position>();
+    pos3->setPosition(glm::vec3(0.0f, 3.0f, 0.0f));
+    compositeTransformation->addTransformation(pos3);
+
+    // **P** - Position 4
+    auto pos4 = std::make_shared<Position>();
+    pos4->setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+    compositeTransformation->addTransformation(pos4);
+
+    // **R** - Rotation 2
+    auto rot2 = std::make_shared<Rotation>();
+    rot2->setRotation(glm::vec3(1.0f, 0.0f, 0.0f), glm::radians(30.0f));
+    compositeTransformation->addTransformation(rot2);
+
+    // **R** - Rotation 3
+    auto rot3 = std::make_shared<Rotation>();
+    rot3->setRotation(glm::vec3(0.0f, 0.0f, 1.0f), glm::radians(90.0f));
+    compositeTransformation->addTransformation(rot3);
+
+    // **R** - Rotation 4
+    auto rot4 = std::make_shared<Rotation>();
+    rot4->setRotation(glm::vec3(0.0f, 1.0f, 0.0f), glm::radians(60.0f));
+    compositeTransformation->addTransformation(rot4);
+
+    // **P** - Position 5
+    auto pos5 = std::make_shared<Position>();
+    pos5->setPosition(glm::vec3(-5.0f, 2.0f, 0.0f));  
+    compositeTransformation->addTransformation(pos5);
+
+    // **P** - Position 6
+    auto pos6 = std::make_shared<Position>();
+    pos6->setPosition(glm::vec3(10.0f, 10.0f, 0.0f)); 
+    compositeTransformation->addTransformation(pos6);
+
+    tree->setTransformation(compositeTransformation);
+
+    scene.addObject(tree);
 }

@@ -11,7 +11,7 @@ public:
 
     void update(float deltaTime);
 
-private:
+protected:
     float minX, maxX, minZ, maxZ;
     float speed;
     glm::vec3 direction;

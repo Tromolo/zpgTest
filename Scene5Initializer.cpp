@@ -79,7 +79,6 @@ void Scene5Initializer::initialize(Scene& scene) {
     unsigned int objectID = 1;
     for (auto& object : scene.getObjects()) {
         object->setID(objectID++);
-        printf("Assigned stencil ID %u to object.\n", object->getID());
     }
 
     glDisable(GL_STENCIL_TEST); 
@@ -202,6 +201,9 @@ void Scene5Initializer::update(float deltaTime) {
     flashlight->setDirection(camera.Front);
     flashlight->setPosition(camera.Position);
 
+    for (auto& animator : animators) {
+        animator->update(deltaTime);
+    }
 }
 
 const std::shared_ptr<DrawableObject> Scene5Initializer::getSkybox()
@@ -320,16 +322,8 @@ void Scene5Initializer::spawnTree(const glm::vec3& position, Scene& scene) {
     printf("Spawning tree at position [%f, %f, %f]\n", position.x, position.y, position.z);
 
     static std::shared_ptr<Model> treeModel = std::make_shared<Model>("tree.obj");
-    if (!treeModel) {
-        printf("Error: Failed to load tree.obj\n");
-        return;
-    }
 
     static GLuint treeTexture = Textures::loadTexture("tree.png", true);
-    if (treeTexture == 0) {
-        printf("Error: Failed to load tree.png\n");
-        return;
-    }
 
     auto tree = std::make_shared<DrawableObject>(treeModel, shaders[1]);
     tree->setTexture(treeTexture, false);
@@ -344,14 +338,28 @@ void Scene5Initializer::spawnTree(const glm::vec3& position, Scene& scene) {
     scale->setScale(glm::vec3(0.1f));
     compositeTransformation->addTransformation(scale);
 
-    tree->setTransformation(compositeTransformation);
-
     static unsigned int nextID = 95; 
     tree->setID(nextID++);
-    printf("Tree assigned ID: %u\n", tree->getID());
+    //printf("Tree assigned ID: %u\n", tree->getID());
 
     scene.addObject(tree);
     printf("Tree added to scene. Total objects: %zu\n", scene.getObjects().size());
+
+    std::vector<glm::vec3> controlPoints = {
+        position,
+        position + glm::vec3(20.0f, 15.0f, 10.0f),
+        position + glm::vec3(40.0f, -15.0f, -10.0f),
+        position + glm::vec3(60.0f, 0.0f, 0.0f)
+    };
+
+
+
+    auto bezierPosition = std::make_shared<DynamicPositionBezier>(controlPoints, 0.1f);
+    compositeTransformation->addTransformation(bezierPosition);
+    animators.push_back(bezierPosition);
+
+    tree->setTransformation(compositeTransformation);
+
 }
 
 

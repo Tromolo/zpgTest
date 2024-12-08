@@ -12,6 +12,7 @@
 #include "DirectionalLight.h"
 #include "DynamicRotation.h"
 #include "PointLight.h"
+#include "DynamicPositionBezier.h"
 
 class Scene5Initializer : public SceneInitializer {
 public:
@@ -23,7 +24,7 @@ public:
     const std::shared_ptr<DrawableObject> getSkybox();
     void spawnTree(const glm::vec3& position, Scene& scene);
 private:
-
+    std::vector<std::shared_ptr<DynamicPositionBezier>> animators;
     std::vector<std::shared_ptr<ShaderProgram>> shaders; 
     std::vector<std::shared_ptr<DrawableObject>> dynamicBushes; 
     std::vector<std::shared_ptr<DynamicPosition>> dynamicPositions;

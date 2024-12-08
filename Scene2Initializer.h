@@ -26,7 +26,7 @@ private:
     std::vector<std::shared_ptr<DynamicPosition>> dynamicPositions;
     std::vector<std::shared_ptr<DynamicPosition>> lightDynamicPositions;
     std::shared_ptr<PointLight> light1, light2;
-
+    void addCustomTransformedTree(Scene& scene, const std::shared_ptr<ShaderProgram>& shaderProgram, const glm::vec3& position);
     std::mt19937 randomEngine;
 };
 
